@@ -9,7 +9,7 @@ type ID struct {
 }
 
 type TimeAt struct {
-	CreatedAt mysql.Time `gorm:"default:CURRENT_TIMESTAMP"`
-	UpdatedAt mysql.Time `gorm:"default:CURRENT_TIMESTAMP"`
-	//DeletedAt mysql.DeletedTime
+	CreatedAt mysql.Time        `json:"createdAt" gorm:"default:CURRENT_TIMESTAMP"`
+	UpdatedAt mysql.Time        `json:"updatedAt" gorm:"default:CURRENT_TIMESTAMP"`
+	DeletedAt mysql.DeletedTime `json:"deletedAt,omitzero" gorm:"index"`
 }

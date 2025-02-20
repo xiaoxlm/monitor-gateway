@@ -78,9 +78,55 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/monitor-gateway/api/v1/metrics/mapping": {
+            "get": {
+                "description": "获取指标映射",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ListMetricsMapping"
+                ],
+                "summary": "ListMetricsMapping",
+                "operationId": "ListMetricsMapping",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_internal_model.MetricsMapping"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.ErrorRESP"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "datatypes.JSONMap": {
+            "type": "object",
+            "additionalProperties": true
+        },
         "github_com_xiaoxlm_monitor-gateway_api_request.MetricsBatchQueryBody": {
             "type": "object",
             "required": [
@@ -92,6 +138,43 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_pkg_metrics_interface.QueryFormItem"
                     }
+                }
+            }
+        },
+        "github_com_xiaoxlm_monitor-gateway_internal_model.MetricsMapping": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "$ref": "#/definitions/mysql.DeletedTime"
+                },
+                "description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "expression": {
+                    "description": "表达式",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "labels": {
+                    "description": "指标标签",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/datatypes.JSONMap"
+                        }
+                    ]
+                },
+                "metricUniqueID": {
+                    "description": "告警唯一标识",
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
                 }
             }
         },
@@ -130,6 +213,18 @@ const docTemplate = `{
                 },
                 "type": {
                     "type": "integer"
+                }
+            }
+        },
+        "mysql.DeletedTime": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
                 }
             }
         }

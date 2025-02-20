@@ -1,4 +1,7 @@
 definitions:
+  datatypes.JSONMap:
+    additionalProperties: true
+    type: object
   github_com_xiaoxlm_monitor-gateway_api_request.MetricsBatchQueryBody:
     properties:
       queries:
@@ -7,6 +10,30 @@ definitions:
         type: array
     required:
     - queries
+    type: object
+  github_com_xiaoxlm_monitor-gateway_internal_model.MetricsMapping:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/mysql.DeletedTime'
+      description:
+        description: 描述
+        type: string
+      expression:
+        description: 表达式
+        type: string
+      id:
+        type: integer
+      labels:
+        allOf:
+        - $ref: '#/definitions/datatypes.JSONMap'
+        description: 指标标签
+      metricUniqueID:
+        description: 告警唯一标识
+        type: string
+      updatedAt:
+        type: string
     type: object
   github_com_xiaoxlm_monitor-gateway_pkg_metrics_interface.QueryFormItem:
     properties:
@@ -34,6 +61,14 @@ definitions:
         type: string
       type:
         type: integer
+    type: object
+  mysql.DeletedTime:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
     type: object
 info:
   contact:
@@ -85,4 +120,32 @@ paths:
       summary: BatchQuery
       tags:
       - BatchQuery
+  /monitor-gateway/api/v1/metrics/mapping:
+    get:
+      consumes:
+      - application/json
+      description: 获取指标映射
+      operationId: ListMetricsMapping
+      parameters:
+      - description: Authorization bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_xiaoxlm_monitor-gateway_internal_model.MetricsMapping'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.ErrorRESP'
+      summary: ListMetricsMapping
+      tags:
+      - ListMetricsMapping
 swagger: "2.0"

@@ -1,16 +1,12 @@
 package config
 
 import (
-	"fmt"
 	tool "github.com/lie-flat-planet/service-init-tool"
 	"github.com/lie-flat-planet/service-init-tool/component/mysql"
 	"github.com/lie-flat-planet/service-init-tool/component/prometheus"
 )
 
 func init() {
-	aa := Config
-	fmt.Print(aa)
-
 	if err := tool.Init("./", &Config); err != nil {
 		panic(err)
 	}

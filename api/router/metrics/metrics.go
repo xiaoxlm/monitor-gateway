@@ -2,13 +2,40 @@ package metrics
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/lie-flat-planet/httputil"
 	"github.com/xiaoxlm/monitor-gateway/api/controller"
 	"github.com/xiaoxlm/monitor-gateway/api/request"
 	"github.com/xiaoxlm/monitor-gateway/config"
-	"net/http"
 )
+
+// ListMetricsMapping
+// @BasePath /
+// PingExample godoc
+// @Summary ListMetricsMapping
+// @Schemes
+// @Description 获取指标映射
+// @Tags ListMetricsMapping
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Authorization bearer token"
+// @Success 200 {object} []model.MetricsMapping 成功
+// @Failure 500 {object} httputil.ErrorRESP 失败
+// @Router /monitor-gateway/api/v1/metrics/mapping [GET]
+// @ID ListMetricsMapping
+func ListMetricsMapping(ctx *gin.Context) {
+	datas, err := controller.ListMetricsMapping(ctx)
+
+	(&httputil.RESP{
+		Content:     datas,
+		ServiceCode: config.Config.Server.Code,
+		Err:         err,
+	}).Output(ctx)
+
+	return
+}
 
 // BatchQuery
 // @BasePath /
