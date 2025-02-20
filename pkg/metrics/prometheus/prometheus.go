@@ -2,6 +2,8 @@ package prometheus
 
 import (
 	"context"
+	"encoding/json"
+	_interface "github.com/xiaoxlm/monitor-gateway/pkg/metrics/interface"
 	"time"
 
 	"github.com/prometheus/client_golang/api"
@@ -9,32 +11,17 @@ import (
 	"github.com/prometheus/common/model"
 )
 
-type QueryFormItem struct {
-	Start int64  `json:"start"`
-	End   int64  `json:"end"`
-	Step  int64  `json:"step"`
-	Query string `json:"query"`
-}
-
 type Prometheus struct {
 	client api.Client
+	
+	values []model.Value
 }
 
-func NewPrometheus(addr string) (*Prometheus, error) {
-	conf := api.Config{
-		Address: addr,
-	}
-
-	client, err := api.NewClient(conf)
-	if err != nil {
-		return nil, err
-	}
-
-	return &Prometheus{client: client}, nil
+func NewPrometheus(cli api.Client) (*Prometheus, error) {
+	return &Prometheus{client: cli}, nil
 }
 
-func (p *Prometheus) BatchQueryRange(ctx context.Context, queries []QueryFormItem) ([]model.Value, error) {
-	var lists []model.Value
+func (p *Prometheus) BatchQueryRange(ctx context.Context, queries []_interface.QueryFormItem) error {
 
 	for _, item := range queries {
 		r := prometheus_v1.Range{
@@ -45,11 +32,23 @@ func (p *Prometheus) BatchQueryRange(ctx context.Context, queries []QueryFormIte
 
 		resp, _, err := prometheus_v1.NewAPI(p.client).QueryRange(ctx, item.Query, r)
 		if err != nil {
-			return nil, err
+			return err
 		}
 
-		lists = append(lists, resp)
+		p.values = append(p.values, resp)
 	}
 
-	return lists, nil
+	return nil
+}
+
+func (p *Prometheus) Output() []model.Value {
+	return p.values
+}
+
+func (p *Prometheus) Marshal() ([]byte, error) {
+	return json.Marshal(p.values)
+}
+
+func (p *Prometheus) Unmarshal(data []byte, v any) error {
+	return nil
 }

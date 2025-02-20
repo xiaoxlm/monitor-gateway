@@ -4,6 +4,7 @@ import (
 	"fmt"
 	tool "github.com/lie-flat-planet/service-init-tool"
 	"github.com/lie-flat-planet/service-init-tool/component/mysql"
+	"github.com/lie-flat-planet/service-init-tool/component/prometheus"
 )
 
 func init() {
@@ -18,6 +19,7 @@ func init() {
 var Config = struct {
 	Server *tool.Server
 	Mysql  *mysql.Mysql
+	Prom   *prometheus.Prom
 }{
 	Server: &tool.Server{
 		Name:     "monitor-gateway",
@@ -27,12 +29,15 @@ var Config = struct {
 	},
 	Mysql: &mysql.Mysql{
 		Config: mysql.Config{
-			Host:        "10.10.1.84:3306",
+			Host:        "127.0.0.1:3306",
 			User:        "root",
-			Password:    "uWXf87plmQGz8zMM",
-			DbName:      "n9e_v6",
+			Password:    "11111",
+			DbName:      "2222",
 			MaxIdleConn: 1,
 			MaxOpenConn: 2,
 		},
+	},
+	Prom: &prometheus.Prom{
+		Addr: "1.2.3.4",
 	},
 }

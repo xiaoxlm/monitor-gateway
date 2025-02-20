@@ -6,8 +6,8 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/lie-flat-planet/httputil v0.0.1
-	github.com/lie-flat-planet/service-init-tool v0.0.16
-	github.com/prometheus/client_golang v1.20.5
+	github.com/lie-flat-planet/service-init-tool v1.0.1
+	github.com/prometheus/client_golang v1.21.0
 	github.com/prometheus/common v0.62.0
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
