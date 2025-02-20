@@ -24,67 +24,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/monitor-gateway/api/v1/demo/hello-world": {
-            "post": {
-                "description": "查询用户第一条数据",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "FetchFirst"
-                ],
-                "summary": "FetchFirst",
-                "operationId": "FetchFirst",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Authorization bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "body",
-                        "name": "Body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/demo.UserBody"
-                        }
-                    },
-                    {
-                        "type": "string",
-                        "description": "用户id",
-                        "name": "userID",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_api_response.UserRESP"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/httputil.ErrorRESP"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/httputil.ErrorRESP"
-                        }
-                    }
-                }
-            }
-        },
         "/monitor-gateway/api/v1/metrics/batch-query": {
             "post": {
                 "description": "更具PromQL查询指标",
@@ -142,20 +81,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "demo.UserBody": {
-            "type": "object",
-            "properties": {
-                "age": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "salary": {
-                    "type": "number"
-                }
-            }
-        },
         "github_com_xiaoxlm_monitor-gateway_api_request.MetricsBatchQueryBody": {
             "type": "object",
             "required": [
@@ -167,20 +92,6 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_pkg_metrics_interface.QueryFormItem"
                     }
-                }
-            }
-        },
-        "github_com_xiaoxlm_monitor-gateway_api_response.UserRESP": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "nickname": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
                 }
             }
         },

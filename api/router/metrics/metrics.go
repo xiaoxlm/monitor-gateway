@@ -28,7 +28,7 @@ import (
 // @ID BatchQuery
 func BatchQuery(ctx *gin.Context) {
 	var body = request.MetricsBatchQueryBody{}
-	if err := ctx.ShouldBindJSON(&body); err != nil {
+	if err := ctx.ShouldBindBodyWithJSON(&body); err != nil {
 		(&httputil.RESP{
 			Content:     "",
 			ServiceCode: config.Config.Server.Code,

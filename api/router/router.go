@@ -13,7 +13,6 @@ func NewRoot(r *gin.Engine) {
 	basePath := r.Group("/monitor-gateway/api")
 	v1 := basePath.Group("/v1")
 
-	//demo.Router(v1)
 	metrics.Router(v1)
 }
 

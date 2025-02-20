@@ -1,13 +1,4 @@
 definitions:
-  demo.UserBody:
-    properties:
-      age:
-        type: integer
-      name:
-        type: string
-      salary:
-        type: number
-    type: object
   github_com_xiaoxlm_monitor-gateway_api_request.MetricsBatchQueryBody:
     properties:
       queries:
@@ -16,15 +7,6 @@ definitions:
         type: array
     required:
     - queries
-    type: object
-  github_com_xiaoxlm_monitor-gateway_api_response.UserRESP:
-    properties:
-      id:
-        type: integer
-      nickname:
-        type: string
-      username:
-        type: string
     type: object
   github_com_xiaoxlm_monitor-gateway_pkg_metrics_interface.QueryFormItem:
     properties:
@@ -66,47 +48,6 @@ info:
   title: monitor-gateway
   version: "1.0"
 paths:
-  /monitor-gateway/api/v1/demo/hello-world:
-    post:
-      consumes:
-      - application/json
-      description: 查询用户第一条数据
-      operationId: FetchFirst
-      parameters:
-      - description: Authorization bearer token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: body
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/demo.UserBody'
-      - description: 用户id
-        in: query
-        name: userID
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/github_com_xiaoxlm_monitor-gateway_api_response.UserRESP'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/httputil.ErrorRESP'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/httputil.ErrorRESP'
-      summary: FetchFirst
-      tags:
-      - FetchFirst
   /monitor-gateway/api/v1/metrics/batch-query:
     post:
       consumes:
