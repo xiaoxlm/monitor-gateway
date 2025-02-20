@@ -26,4 +26,4 @@ docker:
 	docker build -t $(NAME):$(VERSION) .
 
 swagger:
-	swag init --pd -d ./cmd/$(WORKSPACE) -o ./cmd/$(WORKSPACE)/docs
+	swag init --pd -g ./cmd/$(WORKSPACE)/main.go -o ./cmd/$(WORKSPACE)/docs

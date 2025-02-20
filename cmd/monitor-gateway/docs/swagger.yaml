@@ -1,0 +1,81 @@
+definitions:
+  api_router_demo.UserBody:
+    properties:
+      age:
+        type: integer
+      name:
+        type: string
+      salary:
+        type: number
+    type: object
+  github_com_xiaoxlm_monitor-gateway_api_response.UserRESP:
+    properties:
+      id:
+        type: integer
+      nickname:
+        type: string
+      username:
+        type: string
+    type: object
+  httputil.ErrorRESP:
+    properties:
+      msg:
+        type: string
+      type:
+        type: integer
+    type: object
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a monitor gateway
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://www.swagger.io/support
+  title: monitor-gateway
+  version: "1.0"
+paths:
+  /monitor-gateway/api/v1/demo/hello-world:
+    post:
+      consumes:
+      - application/json
+      description: 查询用户第一条数据
+      operationId: FetchFirst
+      parameters:
+      - description: Authorization bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/api_router_demo.UserBody'
+      - description: 用户id
+        in: query
+        name: userID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_xiaoxlm_monitor-gateway_api_response.UserRESP'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.ErrorRESP'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.ErrorRESP'
+      summary: FetchFirst
+      tags:
+      - FetchFirst
+swagger: "2.0"

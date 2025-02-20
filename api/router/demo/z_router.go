@@ -7,5 +7,5 @@ import (
 func Router(r *gin.RouterGroup) {
 	r = r.Group("demo")
 
-	r.GET("/hello-world", FetchFirst)
+	r.POST("/hello-world", FetchFirst)
 }

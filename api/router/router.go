@@ -5,7 +5,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/xiaoxlm/monitor-gateway/api/router/demo"
-	"github.com/xiaoxlm/monitor-gateway/cmd/monitor-gateway/docs"
+	_ "github.com/xiaoxlm/monitor-gateway/cmd/monitor-gateway/docs"
 	"github.com/xiaoxlm/monitor-gateway/config"
 )
 
@@ -42,7 +42,7 @@ func (r *router) registerHandler() *router {
 }
 
 func (r *router) swagger() *router {
-	docs.SwaggerInfo.BasePath = "/monitor-gateway/api/v1"
+	//docs.SwaggerInfo.BasePath = "/monitor-gateway/api/v1"
 	r.ginEngine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r
