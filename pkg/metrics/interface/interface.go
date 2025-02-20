@@ -2,17 +2,17 @@ package _interface
 
 import (
 	"context"
+
+	"github.com/prometheus/common/model"
 )
 
 type QueryFormItem struct {
-	Start int64  `json:"start"`
-	End   int64  `json:"end"`
-	Step  int64  `json:"step"`
-	Query string `json:"query"`
+	Start int64  `json:"start" binding:"required"` // 开始时间
+	End   int64  `json:"end" binding:"required"`   // 结束时间
+	Step  int64  `json:"step" binding:"required"`  // 步长
+	Query string `json:"query" binding:"required"` // 查询语句
 }
 
-type Metrics interface {
-	BatchQueryRange(ctx context.Context, queries []QueryFormItem) error
-	Marshal() ([]byte, error)
-	Unmarshal(data []byte, v any) error
+type TimeSeriesDB interface {
+	BatchQueryRange(ctx context.Context, queries []QueryFormItem) ([]model.Value, error)
 }

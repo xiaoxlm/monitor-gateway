@@ -1,5 +1,5 @@
 definitions:
-  api_router_demo.UserBody:
+  demo.UserBody:
     properties:
       age:
         type: integer
@@ -7,6 +7,15 @@ definitions:
         type: string
       salary:
         type: number
+    type: object
+  github_com_xiaoxlm_monitor-gateway_api_request.MetricsBatchQueryBody:
+    properties:
+      queries:
+        items:
+          $ref: '#/definitions/github_com_xiaoxlm_monitor-gateway_pkg_metrics_interface.QueryFormItem'
+        type: array
+    required:
+    - queries
     type: object
   github_com_xiaoxlm_monitor-gateway_api_response.UserRESP:
     properties:
@@ -16,6 +25,26 @@ definitions:
         type: string
       username:
         type: string
+    type: object
+  github_com_xiaoxlm_monitor-gateway_pkg_metrics_interface.QueryFormItem:
+    properties:
+      end:
+        description: 结束时间
+        type: integer
+      query:
+        description: 查询语句
+        type: string
+      start:
+        description: 开始时间
+        type: integer
+      step:
+        description: 步长
+        type: integer
+    required:
+    - end
+    - query
+    - start
+    - step
     type: object
   httputil.ErrorRESP:
     properties:
@@ -54,7 +83,7 @@ paths:
         name: Body
         required: true
         schema:
-          $ref: '#/definitions/api_router_demo.UserBody'
+          $ref: '#/definitions/demo.UserBody'
       - description: 用户id
         in: query
         name: userID
@@ -78,4 +107,41 @@ paths:
       summary: FetchFirst
       tags:
       - FetchFirst
+  /monitor-gateway/api/v1/metrics/batch-query:
+    post:
+      consumes:
+      - application/json
+      description: 更具PromQL查询指标
+      operationId: BatchQuery
+      parameters:
+      - description: Authorization bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_xiaoxlm_monitor-gateway_api_request.MetricsBatchQueryBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items: {}
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.ErrorRESP'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.ErrorRESP'
+      summary: BatchQuery
+      tags:
+      - BatchQuery
 swagger: "2.0"

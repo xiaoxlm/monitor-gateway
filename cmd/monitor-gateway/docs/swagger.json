@@ -44,7 +44,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api_router_demo.UserBody"
+                            "$ref": "#/definitions/demo.UserBody"
                         }
                     },
                     {
@@ -76,10 +76,65 @@
                     }
                 }
             }
+        },
+        "/monitor-gateway/api/v1/metrics/batch-query": {
+            "post": {
+                "description": "更具PromQL查询指标",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "BatchQuery"
+                ],
+                "summary": "BatchQuery",
+                "operationId": "BatchQuery",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_api_request.MetricsBatchQueryBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {}
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.ErrorRESP"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.ErrorRESP"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "api_router_demo.UserBody": {
+        "demo.UserBody": {
             "type": "object",
             "properties": {
                 "age": {
@@ -90,6 +145,20 @@
                 },
                 "salary": {
                     "type": "number"
+                }
+            }
+        },
+        "github_com_xiaoxlm_monitor-gateway_api_request.MetricsBatchQueryBody": {
+            "type": "object",
+            "required": [
+                "queries"
+            ],
+            "properties": {
+                "queries": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_pkg_metrics_interface.QueryFormItem"
+                    }
                 }
             }
         },
@@ -104,6 +173,33 @@
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "github_com_xiaoxlm_monitor-gateway_pkg_metrics_interface.QueryFormItem": {
+            "type": "object",
+            "required": [
+                "end",
+                "query",
+                "start",
+                "step"
+            ],
+            "properties": {
+                "end": {
+                    "description": "结束时间",
+                    "type": "integer"
+                },
+                "query": {
+                    "description": "查询语句",
+                    "type": "string"
+                },
+                "start": {
+                    "description": "开始时间",
+                    "type": "integer"
+                },
+                "step": {
+                    "description": "步长",
+                    "type": "integer"
                 }
             }
         },
