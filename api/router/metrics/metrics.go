@@ -20,12 +20,13 @@ import (
 // @Tags ListMetricsMapping
 // @Accept json
 // @Produce json
-// @Param Authorization header string true "Authorization bearer token"
-// @Success 200 {object} []model.MetricsMapping 成功
+// @Param Authorization header string true "Authorization Basic token"
+// @Success 200 {object} []internal_model.MetricsMapping 成功
 // @Failure 500 {object} httputil.ErrorRESP 失败
 // @Router /monitor-gateway/api/v1/metrics/mapping [GET]
 // @ID ListMetricsMapping
 func ListMetricsMapping(ctx *gin.Context) {
+	//internal_model.MetricsMapping{}
 	datas, err := controller.ListMetricsMapping(ctx)
 
 	(&httputil.RESP{
@@ -46,7 +47,7 @@ func ListMetricsMapping(ctx *gin.Context) {
 // @Tags BatchQuery
 // @Accept json
 // @Produce json
-// @Param Authorization header string true "Authorization bearer token"
+// @Param Authorization header string true "Authorization Basic token"
 // @Param Body body request.MetricsBatchQueryBody true "body"
 // @Success 200 {object} []model.Value 成功
 // @Failure 400 {object} httputil.ErrorRESP 失败
@@ -54,6 +55,7 @@ func ListMetricsMapping(ctx *gin.Context) {
 // @Router /monitor-gateway/api/v1/metrics/batch-query [POST]
 // @ID BatchQuery
 func BatchQuery(ctx *gin.Context) {
+	//model.Value()
 	var body = request.MetricsBatchQueryBody{}
 	if err := ctx.ShouldBindBodyWithJSON(&body); err != nil {
 		(&httputil.RESP{

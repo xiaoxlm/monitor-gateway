@@ -13,10 +13,14 @@ func init() {
 }
 
 var Config = struct {
-	Server *tool.Server
-	Mysql  *mysql.Mysql
-	Prom   *prometheus.Prom
+	ClientID     string `env:""`
+	ClientSecret string `env:""`
+	Server       *tool.Server
+	Mysql        *mysql.Mysql
+	Prom         *prometheus.Prom
 }{
+	ClientID:     "xx",
+	ClientSecret: "222",
 	Server: &tool.Server{
 		Name:     "monitor-gateway",
 		Code:     333 * 1e3,

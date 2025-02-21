@@ -11,30 +11,6 @@ definitions:
     required:
     - queries
     type: object
-  github_com_xiaoxlm_monitor-gateway_internal_model.MetricsMapping:
-    properties:
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/mysql.DeletedTime'
-      description:
-        description: 描述
-        type: string
-      expression:
-        description: 表达式
-        type: string
-      id:
-        type: integer
-      labels:
-        allOf:
-        - $ref: '#/definitions/datatypes.JSONMap'
-        description: 指标标签
-      metricUniqueID:
-        description: 告警唯一标识
-        type: string
-      updatedAt:
-        type: string
-    type: object
   github_com_xiaoxlm_monitor-gateway_pkg_metrics_interface.QueryFormItem:
     properties:
       end:
@@ -61,6 +37,30 @@ definitions:
         type: string
       type:
         type: integer
+    type: object
+  internal_model.MetricsMapping:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/mysql.DeletedTime'
+      description:
+        description: 描述
+        type: string
+      expression:
+        description: 表达式
+        type: string
+      id:
+        type: integer
+      labels:
+        allOf:
+        - $ref: '#/definitions/datatypes.JSONMap'
+        description: 指标标签
+      metricUniqueID:
+        description: 告警唯一标识
+        type: string
+      updatedAt:
+        type: string
     type: object
   mysql.DeletedTime:
     properties:
@@ -90,7 +90,7 @@ paths:
       description: 更具PromQL查询指标
       operationId: BatchQuery
       parameters:
-      - description: Authorization bearer token
+      - description: Authorization Basic token
         in: header
         name: Authorization
         required: true
@@ -127,7 +127,7 @@ paths:
       description: 获取指标映射
       operationId: ListMetricsMapping
       parameters:
-      - description: Authorization bearer token
+      - description: Authorization Basic token
         in: header
         name: Authorization
         required: true
@@ -139,7 +139,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/github_com_xiaoxlm_monitor-gateway_internal_model.MetricsMapping'
+              $ref: '#/definitions/internal_model.MetricsMapping'
             type: array
         "500":
           description: Internal Server Error

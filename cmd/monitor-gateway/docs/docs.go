@@ -41,7 +41,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Authorization bearer token",
+                        "description": "Authorization Basic token",
                         "name": "Authorization",
                         "in": "header",
                         "required": true
@@ -96,7 +96,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Authorization bearer token",
+                        "description": "Authorization Basic token",
                         "name": "Authorization",
                         "in": "header",
                         "required": true
@@ -108,7 +108,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_internal_model.MetricsMapping"
+                                "$ref": "#/definitions/internal_model.MetricsMapping"
                             }
                         }
                     },
@@ -138,43 +138,6 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_pkg_metrics_interface.QueryFormItem"
                     }
-                }
-            }
-        },
-        "github_com_xiaoxlm_monitor-gateway_internal_model.MetricsMapping": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/mysql.DeletedTime"
-                },
-                "description": {
-                    "description": "描述",
-                    "type": "string"
-                },
-                "expression": {
-                    "description": "表达式",
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "labels": {
-                    "description": "指标标签",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/datatypes.JSONMap"
-                        }
-                    ]
-                },
-                "metricUniqueID": {
-                    "description": "告警唯一标识",
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
                 }
             }
         },
@@ -213,6 +176,43 @@ const docTemplate = `{
                 },
                 "type": {
                     "type": "integer"
+                }
+            }
+        },
+        "internal_model.MetricsMapping": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "$ref": "#/definitions/mysql.DeletedTime"
+                },
+                "description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "expression": {
+                    "description": "表达式",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "labels": {
+                    "description": "指标标签",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/datatypes.JSONMap"
+                        }
+                    ]
+                },
+                "metricUniqueID": {
+                    "description": "告警唯一标识",
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
                 }
             }
         },

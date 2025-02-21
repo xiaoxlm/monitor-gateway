@@ -5,6 +5,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/xiaoxlm/monitor-gateway/api/router/metrics"
+	"github.com/xiaoxlm/monitor-gateway/api/router/middleware"
 	_ "github.com/xiaoxlm/monitor-gateway/cmd/monitor-gateway/docs"
 	"github.com/xiaoxlm/monitor-gateway/config"
 )
@@ -12,6 +13,7 @@ import (
 func NewRoot(r *gin.Engine) {
 	basePath := r.Group("/monitor-gateway/api")
 	v1 := basePath.Group("/v1")
+	v1.Use(middleware.BasicAuth())
 
 	metrics.Router(v1)
 }
