@@ -7,17 +7,21 @@ GOOS ?= $(shell go env GOOS)
 GOARCH ?= $(shell go env GOARCH)
 CGO_ENABLED ?= 0
 
-GO = CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) go
+LOCALGO = CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) go
 
 LDFLAGS = "-s -w -X ${PKG}/internal/version.Version=${VERSION}+sha.${COMMIT_SHA}"
 
-GOBUILD=$(GO) build -a -ldflags $(LDFLAGS)
+GOBUILD=$(LOCALGO) build -a -ldflags $(LDFLAGS)
+LINUX_AMD_GOBUILD = GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -a -ldflags $(LDFLAGS)
 
 WORKSPACE ?= $(NAME)
-GORUN = $(GO) run
+GORUN = $(LOCALGO) run
 
 local-run:
 	cd ./cmd/$(WORKSPACE) && $(GORUN) .
+
+build-amd-linux:
+	$(LINUX_AMD_GOBUILD) -o bin/$(WORKSPACE) ./cmd/$(WORKSPACE)/main.go
 
 build:
 	cd ./cmd/$(WORKSPACE) && $(GOBUILD) -o ./$(WORKSPACE)
