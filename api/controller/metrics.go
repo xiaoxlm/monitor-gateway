@@ -2,9 +2,10 @@ package controller
 
 import (
 	"context"
+	"github.com/xiaoxlm/monitor-gateway/api/ddd/repo"
 	"github.com/xiaoxlm/monitor-gateway/internal/model"
 
-	"github.com/xiaoxlm/monitor-gateway/api/service"
+	"github.com/xiaoxlm/monitor-gateway/api/ddd/entity"
 	"github.com/xiaoxlm/monitor-gateway/config"
 	"github.com/xiaoxlm/monitor-gateway/pkg/metrics/prometheus"
 
@@ -13,8 +14,7 @@ import (
 )
 
 func ListMetricsMapping(ctx context.Context) ([]model.MetricsMapping, error) {
-	mapping := service.NewMetricsMapping(config.Config.Mysql.GetDB())
-	return mapping.List(ctx)
+	return repo.ListMetricsMapping(ctx, config.Config.Mysql.GetDB())
 }
 
 func ListMetrics(ctx context.Context, queries []_interface.QueryFormItem) ([]common_model.Value, error) {
@@ -23,8 +23,8 @@ func ListMetrics(ctx context.Context, queries []_interface.QueryFormItem) ([]com
 		return nil, err
 	}
 
-	m := service.NewMetrics(prom)
-	if err = m.Query(ctx, queries); err != nil {
+	m, err := entity.FactoryMetrics(ctx, prom, queries)
+	if err != nil {
 		return nil, err
 	}
 	return m.Output()
