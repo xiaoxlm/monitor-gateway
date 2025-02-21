@@ -20,7 +20,7 @@ func (m *Metrics) Output() ([]model.Value, error) {
 	return m.output, nil
 }
 
-func (m *Metrics) QueryMetrics(ctx context.Context, queries []_interface.QueryFormItem) error {
+func (m *Metrics) Query(ctx context.Context, queries []_interface.QueryFormItem) error {
 	values, err := m.timeSeriesDB.BatchQueryRange(ctx, queries)
 	if err != nil {
 		return err

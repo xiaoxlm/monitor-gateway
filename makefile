@@ -27,7 +27,7 @@ build:
 	cd ./cmd/$(WORKSPACE) && $(GOBUILD) -o ./$(WORKSPACE)
 
 docker:
-	docker build -t $(NAME):$(VERSION) .
+	docker build --no-cache -f Dockerfile -t $(NAME):$(VERSION) .
 
 swagger:
 	swag init --pd -g ./cmd/$(WORKSPACE)/main.go -o ./cmd/$(WORKSPACE)/docs

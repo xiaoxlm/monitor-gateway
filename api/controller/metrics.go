@@ -24,7 +24,7 @@ func ListMetrics(ctx context.Context, queries []_interface.QueryFormItem) ([]com
 	}
 
 	m := service.NewMetrics(prom)
-	if err = m.QueryMetrics(ctx, queries); err != nil {
+	if err = m.Query(ctx, queries); err != nil {
 		return nil, err
 	}
 	return m.Output()
