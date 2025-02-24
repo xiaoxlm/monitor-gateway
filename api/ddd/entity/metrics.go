@@ -7,35 +7,71 @@ import (
 	_interface "github.com/xiaoxlm/monitor-gateway/pkg/metrics/interface"
 )
 
+// FactoryMetrics creates and initializes a new Metrics aggregate
 func FactoryMetrics(ctx context.Context, tsDB _interface.TimeSeriesDB, queries []_interface.QueryFormItem) (*Metrics, error) {
-	m := &Metrics{timeSeriesDB: tsDB, queries: queries}
-
-	if err := m.query(ctx); err != nil {
+	metrics := NewMetrics(queries, tsDB)
+	if err := metrics.FetchMetrics(ctx); err != nil {
 		return nil, err
 	}
-
-	return m, nil
+	return metrics, nil
 }
 
+// MetricsQuery represents a domain object for metrics queries
+type MetricsQuery struct {
+	Query string
+	Start int64
+	End   int64
+	Step  int64
+}
+
+// Metrics is the aggregate root entity for metrics data
 type Metrics struct {
+	queries      []MetricsQuery
 	timeSeriesDB _interface.TimeSeriesDB
-
-	queries []_interface.QueryFormItem
-
-	output []model.Value
+	values       []model.Value
 }
 
-func (m *Metrics) Output() ([]model.Value, error) {
-	return m.output, nil
+// NewMetrics creates a new Metrics aggregate
+func NewMetrics(queries []_interface.QueryFormItem, tsDB _interface.TimeSeriesDB) *Metrics {
+	metricQueries := make([]MetricsQuery, len(queries))
+	for i, q := range queries {
+		metricQueries[i] = MetricsQuery{
+			Query: q.Query,
+			Start: q.Start,
+			End:   q.End,
+			Step:  q.Step,
+		}
+	}
+
+	return &Metrics{
+		queries:      metricQueries,
+		timeSeriesDB: tsDB,
+	}
 }
 
-func (m *Metrics) query(ctx context.Context) error {
-	values, err := m.timeSeriesDB.BatchQueryRange(ctx, m.queries)
+// FetchMetrics fetches metrics data from the time series database
+func (m *Metrics) FetchMetrics(ctx context.Context) error {
+	// Convert domain queries back to interface format
+	interfaceQueries := make([]_interface.QueryFormItem, len(m.queries))
+	for i, q := range m.queries {
+		interfaceQueries[i] = _interface.QueryFormItem{
+			Query: q.Query,
+			Start: q.Start,
+			End:   q.End,
+			Step:  q.Step,
+		}
+	}
+
+	values, err := m.timeSeriesDB.BatchQueryRange(ctx, interfaceQueries)
 	if err != nil {
 		return err
 	}
 
-	m.output = values
-
+	m.values = values
 	return nil
+}
+
+// GetValues returns the fetched metrics values
+func (m *Metrics) GetValues() ([]model.Value, error) {
+	return m.values, nil
 }

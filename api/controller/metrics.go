@@ -27,5 +27,5 @@ func ListMetrics(ctx context.Context, queries []_interface.QueryFormItem) ([]com
 	if err != nil {
 		return nil, err
 	}
-	return m.Output()
+	return m.GetValues()
 }
