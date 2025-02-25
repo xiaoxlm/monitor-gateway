@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"github.com/xiaoxlm/monitor-gateway/api/ddd/repo"
+	"github.com/xiaoxlm/monitor-gateway/api/request"
 	"github.com/xiaoxlm/monitor-gateway/internal/model"
 
 	"github.com/xiaoxlm/monitor-gateway/api/ddd/entity"
@@ -13,8 +14,9 @@ import (
 	_interface "github.com/xiaoxlm/monitor-gateway/pkg/metrics/interface"
 )
 
-func ListMetricsMapping(ctx context.Context) ([]model.MetricsMapping, error) {
-	return repo.ListMetricsMapping(ctx, config.Config.Mysql.GetDB())
+func ListMetricsMapping(ctx context.Context, query *request.ListMetricsMappingQuery) ([]model.MetricsMapping, error) {
+
+	return repo.ListMetricsMapping(ctx, config.Config.Mysql.GetDB(), query.Category, query.MetricsUniqueID)
 }
 
 func ListMetrics(ctx context.Context, queries []_interface.QueryFormItem) ([]common_model.Value, error) {

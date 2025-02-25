@@ -100,6 +100,25 @@ const docTemplate = `{
                         "name": "Authorization",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "enum": [
+                            "CPU",
+                            "GPU",
+                            "MEMORY",
+                            "DISK",
+                            "NETWORK"
+                        ],
+                        "type": "string",
+                        "description": "类别(CPU、GPU、MEMORY、DISK、NETWORK)",
+                        "name": "category",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "metrics唯一id",
+                        "name": "metricsUniqueID",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -140,6 +159,23 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "github_com_xiaoxlm_monitor-gateway_internal_enum.MetrcisMappingCategory": {
+            "type": "string",
+            "enum": [
+                "CPU",
+                "GPU",
+                "MEMORY",
+                "DISK",
+                "NETWORK"
+            ],
+            "x-enum-varnames": [
+                "MetrcisMappingCategory_CPU",
+                "MetrcisMappingCategory_GPU",
+                "MetrcisMappingCategory_MEMORY",
+                "MetrcisMappingCategory_DISK",
+                "MetrcisMappingCategory_NETWORK"
+            ]
         },
         "github_com_xiaoxlm_monitor-gateway_pkg_metrics_interface.QueryFormItem": {
             "type": "object",
@@ -182,6 +218,14 @@ const docTemplate = `{
         "internal_model.MetricsMapping": {
             "type": "object",
             "properties": {
+                "category": {
+                    "description": "类别",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_internal_enum.MetrcisMappingCategory"
+                        }
+                    ]
+                },
                 "createdAt": {
                     "type": "string"
                 },

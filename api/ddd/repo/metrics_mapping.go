@@ -14,8 +14,16 @@ func BatchCreateMetricsMapping(ctx context.Context, db *gorm.DB, metricsMappingL
 	return db.WithContext(ctx).Create(&metricsMappingList).Error
 }
 
-func ListMetricsMapping(ctx context.Context, db *gorm.DB) ([]model.MetricsMapping, error) {
+func ListMetricsMapping(ctx context.Context, db *gorm.DB, category, uniqueID string) ([]model.MetricsMapping, error) {
 	var metricsMappingList []model.MetricsMapping
-	err := db.WithContext(ctx).Find(&metricsMappingList).Error
+	sql := db.WithContext(ctx)
+	if category != "" {
+		sql = sql.Where("category = ?", category)
+	}
+	if uniqueID != "" {
+		sql = sql.Where("metric_unique_id LIKE ?", "%"+uniqueID+"%")
+	}
+
+	err := sql.Find(&metricsMappingList).Error
 	return metricsMappingList, err
 }

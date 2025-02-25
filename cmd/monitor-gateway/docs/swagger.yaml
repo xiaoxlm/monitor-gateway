@@ -11,6 +11,20 @@ definitions:
     required:
     - queries
     type: object
+  github_com_xiaoxlm_monitor-gateway_internal_enum.MetrcisMappingCategory:
+    enum:
+    - CPU
+    - GPU
+    - MEMORY
+    - DISK
+    - NETWORK
+    type: string
+    x-enum-varnames:
+    - MetrcisMappingCategory_CPU
+    - MetrcisMappingCategory_GPU
+    - MetrcisMappingCategory_MEMORY
+    - MetrcisMappingCategory_DISK
+    - MetrcisMappingCategory_NETWORK
   github_com_xiaoxlm_monitor-gateway_pkg_metrics_interface.QueryFormItem:
     properties:
       end:
@@ -40,6 +54,10 @@ definitions:
     type: object
   internal_model.MetricsMapping:
     properties:
+      category:
+        allOf:
+        - $ref: '#/definitions/github_com_xiaoxlm_monitor-gateway_internal_enum.MetrcisMappingCategory'
+        description: 类别
       createdAt:
         type: string
       deletedAt:
@@ -131,6 +149,20 @@ paths:
         in: header
         name: Authorization
         required: true
+        type: string
+      - description: 类别(CPU、GPU、MEMORY、DISK、NETWORK)
+        enum:
+        - CPU
+        - GPU
+        - MEMORY
+        - DISK
+        - NETWORK
+        in: query
+        name: category
+        type: string
+      - description: metrics唯一id
+        in: query
+        name: metricsUniqueID
         type: string
       produces:
       - application/json

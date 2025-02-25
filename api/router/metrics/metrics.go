@@ -2,7 +2,10 @@ package metrics
 
 import (
 	"fmt"
+	"github.com/xiaoxlm/monitor-gateway/internal/enum"
 	"net/http"
+
+	"github.com/prometheus/common/model"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lie-flat-planet/httputil"
@@ -21,13 +24,27 @@ import (
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Authorization Basic token"
+// @Param category query enum.MetrcisMappingCategory false "类别"
+// @Param metricsUniqueID query string false "metrics唯一id"
 // @Success 200 {object} []internal_model.MetricsMapping 成功
 // @Failure 500 {object} httputil.ErrorRESP 失败
 // @Router /monitor-gateway/api/v1/metrics/mapping [GET]
 // @ID ListMetricsMapping
 func ListMetricsMapping(ctx *gin.Context) {
-	//internal_model.MetricsMapping{}
-	datas, err := controller.ListMetricsMapping(ctx)
+	var _ enum.MetrcisMappingCategory
+	
+	var query = request.ListMetricsMappingQuery{}
+	if err := ctx.ShouldBindQuery(&query); err != nil {
+		(&httputil.RESP{
+			Content:     "",
+			ServiceCode: config.Config.Server.Code,
+			Err:         fmt.Errorf("query parse failed. err:%v", err),
+			HttpCode:    http.StatusBadRequest,
+		}).Output(ctx)
+		return
+	}
+
+	datas, err := controller.ListMetricsMapping(ctx, &query)
 
 	(&httputil.RESP{
 		Content:     datas,
@@ -55,7 +72,7 @@ func ListMetricsMapping(ctx *gin.Context) {
 // @Router /monitor-gateway/api/v1/metrics/batch-query [POST]
 // @ID BatchQuery
 func BatchQuery(ctx *gin.Context) {
-	//model.Value()
+	var _ model.Value
 	var body = request.MetricsBatchQueryBody{}
 	if err := ctx.ShouldBindBodyWithJSON(&body); err != nil {
 		(&httputil.RESP{
