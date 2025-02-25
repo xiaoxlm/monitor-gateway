@@ -12,7 +12,7 @@ func init() {
 
 type MetricsMapping struct {
 	ID
-	MetricUniqueID string                      `json:"metricUniqueID" gorm:"unique"` // 告警唯一标识
+	MetricUniqueID enum.MetricUniqueID         `json:"metricUniqueID" gorm:"unique"` // 告警唯一标识
 	Labels         datatypes.JSONMap           `json:"labels"`                       // 指标标签
 	Expression     string                      `json:"expression"`                   // 表达式
 	Desc           string                      `json:"description"`                  // 描述

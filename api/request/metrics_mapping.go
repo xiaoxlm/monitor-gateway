@@ -1,6 +1,8 @@
 package request
 
+import "github.com/xiaoxlm/monitor-gateway/internal/enum"
+
 type ListMetricsMappingQuery struct {
-	Category        string `form:"category" binding:"omitempty"`
-	MetricsUniqueID string `form:"metricsUniqueID" binding:"omitempty"`
+	Category        enum.MetrcisMappingCategory `form:"category" binding:"omitempty"`
+	MetricsUniqueID string                      `form:"metricsUniqueID" binding:"omitempty"`
 }

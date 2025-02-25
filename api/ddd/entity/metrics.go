@@ -2,26 +2,16 @@ package entity
 
 import (
 	"context"
-
 	"github.com/prometheus/common/model"
 	_interface "github.com/xiaoxlm/monitor-gateway/pkg/metrics/interface"
 )
-
-// FactoryMetrics creates and initializes a new Metrics aggregate
-func FactoryMetrics(ctx context.Context, tsDB _interface.TimeSeriesDB, queries []_interface.QueryFormItem) (*Metrics, error) {
-	metrics := NewMetrics(queries, tsDB)
-	if err := metrics.FetchMetrics(ctx); err != nil {
-		return nil, err
-	}
-	return metrics, nil
-}
 
 // MetricsQuery represents a domain object for metrics queries
 type MetricsQuery struct {
 	Query string
 	Start int64
 	End   int64
-	Step  int64
+	Step  uint
 }
 
 // Metrics is the aggregate root entity for metrics data

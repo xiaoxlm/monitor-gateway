@@ -41,7 +41,7 @@ func TestMetricsMapping_BatchCreate(t *testing.T) {
 			},
 			Expression: `(1 - avg(rate(node_cpu_seconds_total{IBN="$IBN", mode="idle", host_ip="$host_ip"}[1m]))) * 100`,
 			Desc:       "cpu利用率",
-			Category:   enum.MetrcisMappingCategory_CPU,
+			Category:   enum.MetrcisMappingCategory_Cpu,
 		},
 		&model.MetricsMapping{
 			MetricUniqueID: "mem_util",
@@ -51,7 +51,7 @@ func TestMetricsMapping_BatchCreate(t *testing.T) {
 			},
 			Expression: `(1 - (node_memory_MemAvailable_bytes{IBN="$IBN", host_ip="$host_ip"} / node_memory_MemTotal_bytes{IBN="$IBN", host_ip="$host_ip"})) * 100`,
 			Desc:       "内存利用率",
-			Category:   enum.MetrcisMappingCategory_MEMORY,
+			Category:   enum.MetrcisMappingCategory_Memory,
 		},
 		{
 			MetricUniqueID: "gpu_util",
@@ -61,7 +61,7 @@ func TestMetricsMapping_BatchCreate(t *testing.T) {
 			},
 			Expression: `DCGM_FI_DEV_GPU_UTIL{IBN="$IBN", host_ip="$host_ip"}`,
 			Desc:       "gpu利用率",
-			Category:   enum.MetrcisMappingCategory_GPU,
+			Category:   enum.MetrcisMappingCategory_Gpu,
 		},
 		{
 			MetricUniqueID: "disk_util",
@@ -71,7 +71,7 @@ func TestMetricsMapping_BatchCreate(t *testing.T) {
 			},
 			Expression: `100 - ((node_filesystem_avail_bytes{IBN="$IBN", host_ip="$host_ip",mountpoint="/",fstype!="rootfs"} * 100) / node_filesystem_size_bytes{IBN="$IBN", host_ip="$host_ip",mountpoint="/",fstype!="rootfs"})`,
 			Desc:       "磁盘利用率",
-			Category:   enum.MetrcisMappingCategory_DISK,
+			Category:   enum.MetrcisMappingCategory_Disk,
 		},
 		{
 			MetricUniqueID: "eth_recv_bytes_rate",
@@ -81,7 +81,7 @@ func TestMetricsMapping_BatchCreate(t *testing.T) {
 			},
 			Expression: `sum(rate(node_network_receive_bytes_total{IBN="$IBN", host_ip="$host_ip"}[1m]))`,
 			Desc:       "以太网卡端口接收数据总和的变化率",
-			Category:   enum.MetrcisMappingCategory_NETWORK,
+			Category:   enum.MetrcisMappingCategory_Network,
 		},
 		{
 			MetricUniqueID: "eth_trans_bytes_rate",
@@ -91,7 +91,7 @@ func TestMetricsMapping_BatchCreate(t *testing.T) {
 			},
 			Expression: `sum(rate(node_network_transmit_bytes_total{IBN="$IBN", host_ip="$host_ip"}[1m]))`,
 			Desc:       "以太网卡端口发送数据总和的变化率",
-			Category:   enum.MetrcisMappingCategory_NETWORK,
+			Category:   enum.MetrcisMappingCategory_Network,
 		},
 		{
 			MetricUniqueID: "ib_recv_bytes_rate",
@@ -101,7 +101,7 @@ func TestMetricsMapping_BatchCreate(t *testing.T) {
 			},
 			Expression: `sum(rate(node_infiniband_port_data_received_bytes_total{IBN="$IBN", host_ip="$host_ip"}[1m]))`,
 			Desc:       "IB网卡端口接收数据总和的变化率",
-			Category:   enum.MetrcisMappingCategory_NETWORK,
+			Category:   enum.MetrcisMappingCategory_Network,
 		},
 		{
 			MetricUniqueID: "ib_trans_bytes_rate",
@@ -111,7 +111,7 @@ func TestMetricsMapping_BatchCreate(t *testing.T) {
 			},
 			Expression: `sum(rate(node_infiniband_port_data_transmitted_bytes_total{IBN="$IBN", host_ip="$host_ip"}[1m]))`,
 			Desc:       "IB网卡端口发送数据总和的变化率",
-			Category:   enum.MetrcisMappingCategory_NETWORK,
+			Category:   enum.MetrcisMappingCategory_Network,
 		},
 	}
 
