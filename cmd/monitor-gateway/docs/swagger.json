@@ -102,7 +102,7 @@
                             "NETWORK"
                         ],
                         "type": "string",
-                        "description": "类别(CPU、GPU、MEMORY、DISK、NETWORK)",
+                        "description": "类别",
                         "name": "category",
                         "in": "query"
                     },
@@ -147,8 +147,44 @@
                 "queries": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_pkg_metrics_interface.QueryFormItem"
+                        "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_api_request.MetricsQueryInfo"
                     }
+                }
+            }
+        },
+        "github_com_xiaoxlm_monitor-gateway_api_request.MetricsQueryInfo": {
+            "type": "object",
+            "required": [
+                "end",
+                "hostIP",
+                "ibn",
+                "metricUniqueID",
+                "start",
+                "step"
+            ],
+            "properties": {
+                "end": {
+                    "description": "结束时间",
+                    "type": "integer"
+                },
+                "hostIP": {
+                    "description": "节点ip",
+                    "type": "string"
+                },
+                "ibn": {
+                    "description": "算网名",
+                    "type": "string"
+                },
+                "metricUniqueID": {
+                    "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_internal_enum.MetricUniqueID"
+                },
+                "start": {
+                    "description": "开始时间",
+                    "type": "integer"
+                },
+                "step": {
+                    "description": "步长",
+                    "type": "integer"
                 }
             }
         },
@@ -162,39 +198,33 @@
                 "NETWORK"
             ],
             "x-enum-varnames": [
-                "MetrcisMappingCategory_CPU",
-                "MetrcisMappingCategory_GPU",
-                "MetrcisMappingCategory_MEMORY",
-                "MetrcisMappingCategory_DISK",
-                "MetrcisMappingCategory_NETWORK"
+                "MetrcisMappingCategory_Cpu",
+                "MetrcisMappingCategory_Gpu",
+                "MetrcisMappingCategory_Memory",
+                "MetrcisMappingCategory_Disk",
+                "MetrcisMappingCategory_Network"
             ]
         },
-        "github_com_xiaoxlm_monitor-gateway_pkg_metrics_interface.QueryFormItem": {
-            "type": "object",
-            "required": [
-                "end",
-                "query",
-                "start",
-                "step"
+        "github_com_xiaoxlm_monitor-gateway_internal_enum.MetricUniqueID": {
+            "type": "string",
+            "enum": [
+                "cpu_util",
+                "mem_util",
+                "disk_util",
+                "eth_recv_bytes_rate",
+                "eth_trans_bytes_rate",
+                "ib_recv_bytes_rate",
+                "ib_trans_bytes_rate"
             ],
-            "properties": {
-                "end": {
-                    "description": "结束时间",
-                    "type": "integer"
-                },
-                "query": {
-                    "description": "查询语句",
-                    "type": "string"
-                },
-                "start": {
-                    "description": "开始时间",
-                    "type": "integer"
-                },
-                "step": {
-                    "description": "步长",
-                    "type": "integer"
-                }
-            }
+            "x-enum-varnames": [
+                "MetricUniqueID_Cpu_Util",
+                "MetricUniqueID_Mem_Util",
+                "MetricUniqueID_Disk_Util",
+                "MetricUniqueID_Eth_Recv",
+                "MetricUniqueID_Eth_Trans",
+                "MetricUniqueID_IB_Recv",
+                "MetricUniqueID_IB_Trans"
+            ]
         },
         "httputil.ErrorRESP": {
             "type": "object",
@@ -245,7 +275,11 @@
                 },
                 "metricUniqueID": {
                     "description": "告警唯一标识",
-                    "type": "string"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_internal_enum.MetricUniqueID"
+                        }
+                    ]
                 },
                 "updatedAt": {
                     "type": "string"

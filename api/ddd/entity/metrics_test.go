@@ -3,12 +3,11 @@ package entity
 import (
 	"context"
 	"github.com/stretchr/testify/assert"
-	"testing"
-	"time"
-
 	"github.com/xiaoxlm/monitor-gateway/config"
 	_interface "github.com/xiaoxlm/monitor-gateway/pkg/metrics/interface"
 	"github.com/xiaoxlm/monitor-gateway/pkg/metrics/prometheus"
+	"testing"
+	"time"
 )
 
 func TestMetrics_Output(t *testing.T) {
@@ -21,17 +20,17 @@ func TestMetrics_Output(t *testing.T) {
 		{
 			Query: `DCGM_FI_DEV_POWER_USAGE{IBN="算网A", host_ip="10.10.1.84"}`,
 			Start: time.Now().Add(-time.Minute * 1).Unix(),
-			End:   time.Now().Unix(),
-			Step:  15,
+			//Start: 1740471662,
+			End: time.Now().Unix(),
+			//End:  1740475262,
+			Step: 15,
 		},
 	}
 
-	metrics, err := FactoryMetrics(context.Background(), prom, queries)
-	if err != nil {
-		t.Fatal(err)
-	}
+	metrics := NewMetrics(queries, prom)
+	metrics.FetchMetrics(context.Background())
 
-	output, err := metrics.Output()
+	output, err := metrics.GetValues()
 	if err != nil {
 		t.Fatal(err)
 	}

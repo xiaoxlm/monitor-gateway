@@ -3,6 +3,7 @@ package factory
 import (
 	"context"
 	"gorm.io/gorm"
+	"strings"
 
 	"github.com/xiaoxlm/monitor-gateway/api/ddd/entity"
 	"github.com/xiaoxlm/monitor-gateway/api/request"
@@ -24,7 +25,7 @@ func FactoryMetrics(ctx context.Context, db *gorm.DB, tsDB _interface.TimeSeries
 }
 
 func convertMetricsQueryInfoToItem(ctx context.Context, db *gorm.DB, queries []request.MetricsQueryInfo) ([]_interface.QueryFormItem, error) {
-	ret := make([]_interface.QueryFormItem, len(queries))
+	ret := make([]_interface.QueryFormItem, 0, len(queries))
 	mm, err := FactoryMetricsMapping(ctx, db, queries)
 	if err != nil {
 		return nil, err
@@ -35,11 +36,15 @@ func convertMetricsQueryInfoToItem(ctx context.Context, db *gorm.DB, queries []r
 	}
 
 	for _, query := range queries {
+		expression := mm.GetExpression(query.MetricUniqueID)
+		expression = strings.ReplaceAll(expression, "$IBN", query.IBN)
+		expression = strings.ReplaceAll(expression, "$host_ip", query.HostIP)
+
 		ret = append(ret, _interface.QueryFormItem{
 			Start: query.Start,
 			End:   query.End,
 			Step:  query.Step,
-			Query: mm.GetExpression(query.MetricUniqueID),
+			Query: expression,
 		})
 	}
 
