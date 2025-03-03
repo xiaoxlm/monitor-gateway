@@ -3,21 +3,30 @@ package controller
 import (
 	"context"
 	"fmt"
+	"github.com/xiaoxlm/monitor-gateway/api/request"
 	"testing"
-	"time"
-
-	_interface "github.com/xiaoxlm/monitor-gateway/pkg/metrics/interface"
 )
 
 func TestMetrics_ListMetrics(t *testing.T) {
 
 	ctx := context.Background()
-	queries := []_interface.QueryFormItem{
+
+	queries := []request.MetricsQueryInfo{
 		{
-			Query: `DCGM_FI_DEV_POWER_USAGE{IBN="算网A", host_ip="10.10.1.84"}`,
-			Start: time.Now().Add(-time.Hour).Unix(),
-			End:   time.Now().Unix(),
-			Step:  15,
+			MetricUniqueID: `cpu_util`,
+			IBN:            "算网A",
+			HostIP:         "10.10.1.84",
+			Start:          1740980024, //time.Now().Add(-time.Hour).Unix(),
+			End:            1740980624, //time.Now().Unix(),
+			Step:           15,
+		},
+		{
+			MetricUniqueID: `mem_util`,
+			IBN:            "算网A",
+			HostIP:         "10.10.1.84",
+			Start:          1740980024, //time.Now().Add(-time.Hour).Unix(),
+			End:            1740980624, //time.Now().Unix(),
+			Step:           15,
 		},
 	}
 

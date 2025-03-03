@@ -2,15 +2,15 @@ package controller
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/xiaoxlm/monitor-gateway/api/ddd/factory"
 	"github.com/xiaoxlm/monitor-gateway/api/ddd/repo"
 	"github.com/xiaoxlm/monitor-gateway/api/request"
+	"github.com/xiaoxlm/monitor-gateway/api/response"
 	"github.com/xiaoxlm/monitor-gateway/internal/model"
 
 	"github.com/xiaoxlm/monitor-gateway/config"
 	"github.com/xiaoxlm/monitor-gateway/pkg/metrics/prometheus"
-
-	common_model "github.com/prometheus/common/model"
 )
 
 func ListMetricsMapping(ctx context.Context, query *request.ListMetricsMappingQuery) ([]model.MetricsMapping, error) {
@@ -18,7 +18,7 @@ func ListMetricsMapping(ctx context.Context, query *request.ListMetricsMappingQu
 	return repo.ListMetricsMapping(ctx, config.Config.Mysql.GetDB(), query.Category, query.MetricsUniqueID)
 }
 
-func ListMetrics(ctx context.Context, queries []request.MetricsQueryInfo) ([]common_model.Value, error) {
+func ListMetrics(ctx context.Context, queries []request.MetricsQueryInfo) (*response.ListMetricsRESP, error) {
 	prom, err := prometheus.NewPrometheus(config.Config.Prom.GetClient())
 	if err != nil {
 		return nil, err
@@ -30,5 +30,31 @@ func ListMetrics(ctx context.Context, queries []request.MetricsQueryInfo) ([]com
 	if err != nil {
 		return nil, err
 	}
-	return m.GetValues()
+
+	values, err := m.GetValues()
+	if err != nil {
+		return nil, err
+	}
+
+	var respData []response.MetricsData
+	for idx, v := range values {
+		vbytes, err := json.Marshal(v.Values)
+		if err != nil {
+			return nil, err
+		}
+
+		var mv []response.MetricsValues
+		if err = json.Unmarshal(vbytes, &mv); err != nil {
+			return nil, err
+		}
+
+		respData = append(respData, response.MetricsData{
+			MetricUniqueID: queries[idx].MetricUniqueID,
+			Values:         mv,
+		})
+	}
+
+	return &response.ListMetricsRESP{
+		Data: respData,
+	}, nil
 }

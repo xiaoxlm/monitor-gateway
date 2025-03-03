@@ -60,8 +60,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {}
+                            "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_api_response.ListMetricsRESP"
                         }
                     },
                     "400": {
@@ -193,6 +192,48 @@ const docTemplate = `{
                 "step": {
                     "description": "步长",
                     "type": "integer"
+                }
+            }
+        },
+        "github_com_xiaoxlm_monitor-gateway_api_response.ListMetricsRESP": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_api_response.MetricsData"
+                    }
+                }
+            }
+        },
+        "github_com_xiaoxlm_monitor-gateway_api_response.MetricsData": {
+            "type": "object",
+            "properties": {
+                "metricUniqueID": {
+                    "description": "指标唯一标识",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_internal_enum.MetricUniqueID"
+                        }
+                    ]
+                },
+                "values": {
+                    "description": "时序数值",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_api_response.MetricsValues"
+                    }
+                }
+            }
+        },
+        "github_com_xiaoxlm_monitor-gateway_api_response.MetricsValues": {
+            "type": "object",
+            "properties": {
+                "timestamp": {
+                    "type": "integer"
+                },
+                "value": {
+                    "type": "string"
                 }
             }
         },

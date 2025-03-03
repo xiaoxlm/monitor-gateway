@@ -2,10 +2,9 @@ package metrics
 
 import (
 	"fmt"
+	"github.com/xiaoxlm/monitor-gateway/api/response"
 	"github.com/xiaoxlm/monitor-gateway/internal/enum"
 	"net/http"
-
-	"github.com/prometheus/common/model"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lie-flat-planet/httputil"
@@ -32,7 +31,7 @@ import (
 // @ID ListMetricsMapping
 func ListMetricsMapping(ctx *gin.Context) {
 	var _ enum.MetrcisMappingCategory
-	
+
 	var query = request.ListMetricsMappingQuery{}
 	if err := ctx.ShouldBindQuery(&query); err != nil {
 		(&httputil.RESP{
@@ -66,13 +65,13 @@ func ListMetricsMapping(ctx *gin.Context) {
 // @Produce json
 // @Param Authorization header string true "Authorization Basic token"
 // @Param Body body request.MetricsBatchQueryBody true "body"
-// @Success 200 {object} []model.Value 成功
+// @Success 200 {object} response.ListMetricsRESP 成功
 // @Failure 400 {object} httputil.ErrorRESP 失败
 // @Failure 500 {object} httputil.ErrorRESP 失败
 // @Router /monitor-gateway/api/v1/metrics/batch-query [POST]
 // @ID BatchQuery
 func BatchQuery(ctx *gin.Context) {
-	var _ model.Value
+	var _ response.ListMetricsRESP
 	var body = request.MetricsBatchQueryBody{}
 	if err := ctx.ShouldBindBodyWithJSON(&body); err != nil {
 		(&httputil.RESP{
