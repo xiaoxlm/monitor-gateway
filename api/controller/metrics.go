@@ -3,8 +3,8 @@ package controller
 import (
 	"context"
 	"encoding/json"
-	"github.com/xiaoxlm/monitor-gateway/api/ddd/factory"
-	"github.com/xiaoxlm/monitor-gateway/api/ddd/repo"
+	"github.com/xiaoxlm/monitor-gateway/api/domain/factory"
+	"github.com/xiaoxlm/monitor-gateway/api/domain/repo"
 	"github.com/xiaoxlm/monitor-gateway/api/request"
 	"github.com/xiaoxlm/monitor-gateway/api/response"
 	"github.com/xiaoxlm/monitor-gateway/internal/model"

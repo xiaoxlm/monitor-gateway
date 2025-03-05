@@ -2,24 +2,24 @@ package factory
 
 import (
 	"context"
-	"github.com/xiaoxlm/monitor-gateway/api/ddd/repo"
+	"github.com/xiaoxlm/monitor-gateway/api/domain/repo"
 	"gorm.io/gorm"
 
-	"github.com/xiaoxlm/monitor-gateway/api/ddd/entity"
+	"github.com/xiaoxlm/monitor-gateway/api/domain/entity"
 	"github.com/xiaoxlm/monitor-gateway/api/request"
 	"github.com/xiaoxlm/monitor-gateway/internal/enum"
 )
 
 func FactoryMetricsMapping(ctx context.Context, db *gorm.DB, queries []request.MetricsQueryInfo) (*entity.MetricsMapping, error) {
-	labels := make(map[enum.MetricUniqueID]*entity.Labels)
+	labelValue := make(map[enum.MetricUniqueID]map[string]string)
 	for _, query := range queries {
-		labels[query.MetricUniqueID] = &entity.Labels{
-			IBN:    query.IBN,
-			HostIP: query.HostIP,
-		}
+		labelValue[query.MetricUniqueID] = query.LabelValue
 	}
 
-	mm := entity.NewMetricsMapping(labels)
+	mm, err := entity.NewMetricsMapping(labelValue)
+	if err != nil {
+		return nil, err
+	}
 
 	metricsMappingList, err := repo.ListMetricsMappingByUniqueID(ctx, db, mm)
 	if err != nil {

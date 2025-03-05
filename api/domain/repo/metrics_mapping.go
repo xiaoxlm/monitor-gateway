@@ -3,7 +3,7 @@ package repo
 import (
 	"context"
 
-	"github.com/xiaoxlm/monitor-gateway/api/ddd/entity"
+	"github.com/xiaoxlm/monitor-gateway/api/domain/entity"
 	"github.com/xiaoxlm/monitor-gateway/internal/enum"
 	"github.com/xiaoxlm/monitor-gateway/internal/model"
 	"gorm.io/gorm"
@@ -34,10 +34,6 @@ func ListMetricsMapping(ctx context.Context, db *gorm.DB, category enum.MetrcisM
 func ListMetricsMappingByUniqueID(ctx context.Context, db *gorm.DB, entity *entity.MetricsMapping) ([]model.MetricsMapping, error) {
 	var metricsMappingList []model.MetricsMapping
 
-	if err := entity.CheckLabels(); err != nil {
-		return nil, err
-	}
-
-	err := db.WithContext(ctx).Where("metric_unique_id IN ?", entity.ListLabel()).Find(&metricsMappingList).Error
+	err := db.WithContext(ctx).Where("metric_unique_id IN ?", entity.ListMetricUniqueID()).Find(&metricsMappingList).Error
 	return metricsMappingList, err
 }

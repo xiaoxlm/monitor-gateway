@@ -163,8 +163,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "end",
-                "hostIP",
-                "ibn",
+                "labelValue",
                 "metricUniqueID",
                 "start",
                 "step"
@@ -174,13 +173,11 @@ const docTemplate = `{
                     "description": "结束时间",
                     "type": "integer"
                 },
-                "hostIP": {
-                    "description": "节点ip",
-                    "type": "string"
-                },
-                "ibn": {
-                    "description": "算网名",
-                    "type": "string"
+                "labelValue": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 },
                 "metricUniqueID": {
                     "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_internal_enum.MetricUniqueID"
@@ -307,15 +304,11 @@ const docTemplate = `{
                     "description": "描述",
                     "type": "string"
                 },
-                "expression": {
-                    "description": "表达式",
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
                 "labels": {
-                    "description": "指标标签",
+                    "description": "指标标签(key:标签名；value:标签描述)",
                     "allOf": [
                         {
                             "$ref": "#/definitions/datatypes.JSONMap"

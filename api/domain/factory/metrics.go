@@ -2,12 +2,10 @@ package factory
 
 import (
 	"context"
-	"gorm.io/gorm"
-	"strings"
-
-	"github.com/xiaoxlm/monitor-gateway/api/ddd/entity"
+	"github.com/xiaoxlm/monitor-gateway/api/domain/entity"
 	"github.com/xiaoxlm/monitor-gateway/api/request"
 	_interface "github.com/xiaoxlm/monitor-gateway/pkg/metrics/interface"
+	"gorm.io/gorm"
 )
 
 // FactoryMetrics creates and initializes a new Metrics aggregate
@@ -31,20 +29,17 @@ func convertMetricsQueryInfoToItem(ctx context.Context, db *gorm.DB, queries []r
 		return nil, err
 	}
 
-	if err = mm.CheckExpressions(); err != nil {
-		return nil, err
-	}
-
 	for _, query := range queries {
-		expression := mm.GetExpression(query.MetricUniqueID)
-		expression = strings.ReplaceAll(expression, "$IBN", query.IBN)
-		expression = strings.ReplaceAll(expression, "$host_ip", query.HostIP)
+		q, err := mm.GetParsedExpression(query.MetricUniqueID)
+		if err != nil {
+			return nil, err
+		}
 
 		ret = append(ret, _interface.QueryFormItem{
 			Start: query.Start,
 			End:   query.End,
 			Step:  query.Step,
-			Query: expression,
+			Query: q,
 		})
 	}
 
