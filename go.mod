@@ -5,7 +5,7 @@ go 1.24.0
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-redis/redis/v8 v8.11.5
-	github.com/lie-flat-planet/httputil v0.0.3
+	github.com/lie-flat-planet/httputil v0.0.6
 	github.com/lie-flat-planet/service-init-tool v1.0.1
 	github.com/prometheus/client_golang v1.21.0
 	github.com/prometheus/common v0.62.0

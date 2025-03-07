@@ -31,7 +31,7 @@ func FactoryMetricsMapping(ctx context.Context, db *gorm.DB, queries []request.M
 		expressionMap[metricsMapping.MetricUniqueID] = metricsMapping.Expression
 	}
 
-	mm.SetExpression(expressionMap)
+	mm.SetRawExpression(expressionMap)
 
 	return mm, nil
 }

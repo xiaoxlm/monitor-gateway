@@ -48,8 +48,16 @@ func (m *MetricsMapping) ListMetricUniqueID() []enum.MetricUniqueID {
 	return list
 }
 
-func (m *MetricsMapping) SetExpression(expression map[enum.MetricUniqueID]string) {
+func (m *MetricsMapping) SetRawExpression(expression map[enum.MetricUniqueID]string) {
 	m.expression = expression
+}
+
+func (m *MetricsMapping) GetParsedExpression(metricUniqueID enum.MetricUniqueID) (string, error) {
+	if err := m.parseExpression(); err != nil {
+		return "", err
+	}
+
+	return m.parsedExpression[metricUniqueID], nil
 }
 
 func (m *MetricsMapping) parseExpression() error {
@@ -64,12 +72,4 @@ func (m *MetricsMapping) parseExpression() error {
 		m.parsedExpression[uniqueID] = replaceExpr
 	}
 	return nil
-}
-
-func (m *MetricsMapping) GetParsedExpression(metricUniqueID enum.MetricUniqueID) (string, error) {
-	if err := m.parseExpression(); err != nil {
-		return "", err
-	}
-
-	return m.parsedExpression[metricUniqueID], nil
 }

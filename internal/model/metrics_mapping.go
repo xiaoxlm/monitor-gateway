@@ -17,6 +17,8 @@ type MetricsMapping struct {
 	Expression     string                      `json:"-"`                            // 表达式
 	Desc           string                      `json:"description"`                  // 描述
 	Category       enum.MetrcisMappingCategory `json:"category"`                     // 类别
+	BoardPayloadID uint                        `json:"-"`                            // 监控面板id
+	PanelID        string                      `json:"-"`                            // 具体某个仪表图id
 	TimeAt
 }
 

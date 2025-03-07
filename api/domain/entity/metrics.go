@@ -2,9 +2,8 @@ package entity
 
 import (
 	"context"
-	"fmt"
+	"github.com/lie-flat-planet/httputil"
 	"github.com/prometheus/common/model"
-	"github.com/sirupsen/logrus"
 	_interface "github.com/xiaoxlm/monitor-gateway/pkg/metrics/interface"
 )
 
@@ -64,44 +63,15 @@ func (m *Metrics) FetchMetrics(ctx context.Context) error {
 }
 
 // GetValues returns the fetched metrics values
-func (m *Metrics) GetValues() ([]MetricsFormedData, error) {
-	var ret []MetricsFormedData
-	for _, result := range m.values {
-		switch result.Type() {
-		case model.ValScalar:
-			logrus.Warnf("need to parse 'Scalar' type value")
-		case model.ValVector:
-			logrus.Warnf("need to parse 'Vector' type value")
-		case model.ValMatrix:
-			var values []Values
-			matrix := result.(model.Matrix)
-			for _, stream := range matrix {
-				for _, value := range stream.Values {
-					values = append(values, Values{
-						Value:     value.Value.String(),
-						Timestamp: value.Timestamp.Unix(),
-					})
-				}
-			}
-
-			ret = append(ret, MetricsFormedData{
-				Values: values,
-			})
-		case model.ValString:
-			logrus.Warnf("need to parse 'String' type value")
-		default:
-			return nil, fmt.Errorf("unknown metric type: %s", result.Type())
-		}
-	}
-
-	return ret, nil
+func (m *Metrics) ListValues() ([]httputil.MetricsFromExpr, error) {
+	return httputil.PromCommonModelValue(m.values)
 }
 
-type MetricsFormedData struct {
-	Values []Values
-}
-
-type Values struct {
-	Value     string
-	Timestamp int64
-}
+//type MetricsFormedData struct {
+//	Values []Values
+//}
+//
+//type Values struct {
+//	Value     string
+//	Timestamp int64
+//}
