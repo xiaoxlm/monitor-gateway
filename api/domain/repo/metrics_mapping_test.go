@@ -19,7 +19,7 @@ func TestMetricsMapping_Create(t *testing.T) {
 
 	ctx := context.Background()
 	err := CreateMetricsMapping(ctx, db, &model.MetricsMapping{
-		MetricUniqueID: enum.MetricUniqueID_Avg_Gpu_Util,
+		MetricUniqueID: enum.MetricUniqueID_Gpu_Avg_Util,
 		Labels: map[string]interface{}{
 			"IBN":     "算网名",
 			"host_ip": "节点ip",
@@ -37,7 +37,7 @@ func TestMetricsMapping_Create(t *testing.T) {
 func TestMetricsMapping_BatchCreate(t *testing.T) {
 	list := []*model.MetricsMapping{
 		&model.MetricsMapping{
-			MetricUniqueID: enum.MetricUniqueID_Avg_Cpu_Util,
+			MetricUniqueID: enum.MetricUniqueID_Cpu_Avg_Util,
 			Labels: map[string]interface{}{
 				"IBN":     "算网名",
 				"host_ip": "节点ip",
@@ -61,28 +61,52 @@ func TestMetricsMapping_BatchCreate(t *testing.T) {
 			PanelID:        "34ef9aa4-0328-41a2-aa32-265604e2abfb",
 		},
 		{
-			MetricUniqueID: enum.MetricUniqueID_Avg_Gpu_Util,
+			MetricUniqueID: enum.MetricUniqueID_Gpu_Avg_Util,
 			Labels: map[string]interface{}{
 				"IBN":     "算网名",
 				"host_ip": "节点ip",
 			},
 			Expression:     `avg by(host_ip) (DCGM_FI_DEV_GPU_UTIL{IBN="$IBN", host_ip="$host_ip"})`,
-			Desc:           "gpu利用率",
+			Desc:           "gpu平均利用率",
 			Category:       enum.MetrcisMappingCategory_Gpu,
 			BoardPayloadID: 2,
 			PanelID:        "7384ef77-1d5c-4133-a4ce-a496a4fa5114",
 		},
 		{
-			MetricUniqueID: enum.MetricUniqueID_All_Gpu_Util,
+			MetricUniqueID: enum.MetricUniqueID_Gpu_All_Util,
 			Labels: map[string]interface{}{
 				"IBN":     "算网名",
 				"host_ip": "节点ip",
 			},
 			Expression:     `avg by(host_ip,gpu) (DCGM_FI_DEV_GPU_UTIL{IBN="$IBN", host_ip="$host_ip"})`,
-			Desc:           "gpu利用率",
+			Desc:           "所有gpu利用率",
 			Category:       enum.MetrcisMappingCategory_Gpu,
 			BoardPayloadID: 2,
 			PanelID:        "7384ef77-1d5c-4133-a4ce-a496a4fa5114",
+		},
+		{
+			MetricUniqueID: enum.MetricUniqueID_Gpu_Mem_Avg_Util,
+			Labels: map[string]interface{}{
+				"IBN":     "算网名",
+				"host_ip": "节点ip",
+			},
+			Expression:     `avg by (host_ip)(last_over_time(DCGM_FI_DEV_FB_USED{IBN="$IBN", host_ip="$host_ip"}[1m])/(last_over_time(DCGM_FI_DEV_FB_FREE{IBN="$IBN", host_ip="$host_ip"}[1m]) + last_over_time(DCGM_FI_DEV_FB_USED{IBN="$IBN", host_ip="$host_ip"}[1m])))`,
+			Desc:           "gpu平均内存利用率",
+			Category:       enum.MetrcisMappingCategory_Gpu,
+			BoardPayloadID: 2,
+			PanelID:        "4f046feb-4caf-4174-9c10-9b7c6a4ee795",
+		},
+		{
+			MetricUniqueID: enum.MetricUniqueID_Gpu_Avg_Temp,
+			Labels: map[string]interface{}{
+				"IBN":     "算网名",
+				"host_ip": "节点ip",
+			},
+			Expression:     `avg by (host_ip)DCGM_FI_DEV_GPU_TEMP{IBN="$IBN", host_ip="$host_ip"})`,
+			Desc:           "gpu平均温度",
+			Category:       enum.MetrcisMappingCategory_Gpu,
+			BoardPayloadID: 2,
+			PanelID:        "2b51fdb8-6a56-481c-91f0-8d4c09cccc14",
 		},
 		{
 			MetricUniqueID: enum.MetricUniqueID_Disk_Util,
