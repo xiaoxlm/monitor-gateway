@@ -53,7 +53,7 @@ func ListMetrics(ctx context.Context, queries []request.MetricsQueryInfo) (*resp
 
 func MetricMultiDataMapping(uniqueID enum.MetricUniqueID) bool {
 	switch uniqueID {
-	case enum.MetricUniqueID_All_Gpu_Util:
+	case enum.MetricUniqueID_Gpu_All_Util:
 		return true
 	default:
 		return false

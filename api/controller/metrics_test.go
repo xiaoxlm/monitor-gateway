@@ -14,7 +14,7 @@ func TestMetrics_ListMetrics(t *testing.T) {
 
 	queries := []request.MetricsQueryInfo{
 		{
-			MetricUniqueID: `all_gpu_util`,
+			MetricUniqueID: `gpu_all_util`,
 			LabelValue: map[string]string{
 				"IBN":     "算网A",
 				"host_ip": "10.10.1.84",
