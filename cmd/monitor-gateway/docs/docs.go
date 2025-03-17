@@ -104,7 +104,7 @@ const docTemplate = `{
                         "enum": [
                             "CPU",
                             "GPU",
-                            "MEMORY",
+                            "NODE_MEMORY",
                             "DISK",
                             "NETWORK"
                         ],
@@ -206,6 +206,9 @@ const docTemplate = `{
         "github_com_xiaoxlm_monitor-gateway_api_response.MetricsData": {
             "type": "object",
             "properties": {
+                "hostIP": {
+                    "type": "string"
+                },
                 "metricUniqueID": {
                     "description": "指标唯一标识",
                     "allOf": [
@@ -214,23 +217,16 @@ const docTemplate = `{
                         }
                     ]
                 },
+                "multiMetricsData": {
+                    "description": "values 是否有多个值",
+                    "type": "boolean"
+                },
                 "values": {
                     "description": "时序数值",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_api_response.MetricsValues"
+                        "$ref": "#/definitions/httputil.MetricsInfo"
                     }
-                }
-            }
-        },
-        "github_com_xiaoxlm_monitor-gateway_api_response.MetricsValues": {
-            "type": "object",
-            "properties": {
-                "timestamp": {
-                    "type": "integer"
-                },
-                "value": {
-                    "type": "string"
                 }
             }
         },
@@ -239,7 +235,7 @@ const docTemplate = `{
             "enum": [
                 "CPU",
                 "GPU",
-                "MEMORY",
+                "NODE_MEMORY",
                 "DISK",
                 "NETWORK"
             ],
@@ -254,8 +250,12 @@ const docTemplate = `{
         "github_com_xiaoxlm_monitor-gateway_internal_enum.MetricUniqueID": {
             "type": "string",
             "enum": [
-                "cpu_util",
+                "cpu_avg_util",
                 "mem_util",
+                "gpu_mem_avg_util",
+                "gpu_avg_util",
+                "gpu_all_util",
+                "gpu_avg_temp",
                 "disk_util",
                 "eth_recv_bytes_rate",
                 "eth_trans_bytes_rate",
@@ -263,8 +263,12 @@ const docTemplate = `{
                 "ib_trans_bytes_rate"
             ],
             "x-enum-varnames": [
-                "MetricUniqueID_Cpu_Util",
+                "MetricUniqueID_Cpu_Avg_Util",
                 "MetricUniqueID_Mem_Util",
+                "MetricUniqueID_Gpu_Mem_Avg_Util",
+                "MetricUniqueID_Gpu_Avg_Util",
+                "MetricUniqueID_Gpu_All_Util",
+                "MetricUniqueID_Gpu_Avg_Temp",
                 "MetricUniqueID_Disk_Util",
                 "MetricUniqueID_Eth_Recv",
                 "MetricUniqueID_Eth_Trans",
@@ -275,11 +279,43 @@ const docTemplate = `{
         "httputil.ErrorRESP": {
             "type": "object",
             "properties": {
+                "code": {
+                    "type": "integer"
+                },
                 "msg": {
                     "type": "string"
+                }
+            }
+        },
+        "httputil.MetricsInfo": {
+            "type": "object",
+            "properties": {
+                "metric": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 },
-                "type": {
+                "values": {
+                    "description": "时序数值",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/httputil.MetricsValues"
+                    }
+                }
+            }
+        },
+        "httputil.MetricsValues": {
+            "type": "object",
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "timestamp": {
                     "type": "integer"
+                },
+                "value": {
+                    "type": "number"
                 }
             }
         },

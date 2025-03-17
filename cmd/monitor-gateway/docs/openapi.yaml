@@ -1,0 +1,271 @@
+openapi: 3.0.1
+info:
+  title: monitor-gateway
+  description: This is a monitor gateway
+  termsOfService: http://www.swagger.io/support
+  contact:
+    name: API Support
+    url: http://www.swagger.io/support
+    email: support@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: "1.0"
+servers:
+  - url: /
+paths:
+  /monitor-gateway/api/v1/metrics/batch-query:
+    post:
+      tags:
+        - BatchQuery
+      summary: BatchQuery
+      description: 更具PromQL查询指标
+      operationId: BatchQuery
+      parameters:
+        - name: Authorization
+          in: header
+          description: Authorization Basic token
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/github_com_xiaoxlm_monitor-gateway_api_request.MetricsBatchQueryBody'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_xiaoxlm_monitor-gateway_api_response.ListMetricsRESP'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httputil.ErrorRESP'
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httputil.ErrorRESP'
+      x-codegen-request-body-name: Body
+  /monitor-gateway/api/v1/metrics/mapping:
+    get:
+      tags:
+        - ListMetricsMapping
+      summary: ListMetricsMapping
+      description: 获取指标映射
+      operationId: ListMetricsMapping
+      parameters:
+        - name: Authorization
+          in: header
+          description: Authorization Basic token
+          required: true
+          schema:
+            type: string
+        - name: category
+          in: query
+          description: 类别
+          schema:
+            type: string
+            enum:
+              - CPU
+              - GPU
+              - NODE_MEMORY
+              - DISK
+              - NETWORK
+        - name: metricsUniqueID
+          in: query
+          description: metrics唯一id
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/internal_model.MetricsMapping'
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httputil.ErrorRESP'
+components:
+  schemas:
+    datatypes.JSONMap:
+      type: object
+      additionalProperties: true
+    github_com_xiaoxlm_monitor-gateway_api_request.MetricsBatchQueryBody:
+      required:
+        - queries
+      type: object
+      properties:
+        queries:
+          type: array
+          items:
+            $ref: '#/components/schemas/github_com_xiaoxlm_monitor-gateway_api_request.MetricsQueryInfo'
+    github_com_xiaoxlm_monitor-gateway_api_request.MetricsQueryInfo:
+      required:
+        - end
+        - labelValue
+        - metricUniqueID
+        - start
+        - step
+      type: object
+      properties:
+        end:
+          type: integer
+          description: 结束时间
+        labelValue:
+          type: object
+          additionalProperties:
+            type: string
+        metricUniqueID:
+          $ref: '#/components/schemas/github_com_xiaoxlm_monitor-gateway_internal_enum.MetricUniqueID'
+        start:
+          type: integer
+          description: 开始时间
+        step:
+          type: integer
+          description: 步长
+    github_com_xiaoxlm_monitor-gateway_api_response.ListMetricsRESP:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/github_com_xiaoxlm_monitor-gateway_api_response.MetricsData'
+    github_com_xiaoxlm_monitor-gateway_api_response.MetricsData:
+      type: object
+      properties:
+        hostIP:
+          type: string
+        metricUniqueID:
+          type: object
+          description: 指标唯一标识
+          allOf:
+            - $ref: '#/components/schemas/github_com_xiaoxlm_monitor-gateway_internal_enum.MetricUniqueID'
+        multiMetricsData:
+          type: boolean
+          description: values 是否有多个值
+        values:
+          type: array
+          description: 时序数值
+          items:
+            $ref: '#/components/schemas/httputil.MetricsInfo'
+    github_com_xiaoxlm_monitor-gateway_internal_enum.MetrcisMappingCategory:
+      type: string
+      enum:
+        - CPU
+        - GPU
+        - NODE_MEMORY
+        - DISK
+        - NETWORK
+      x-enum-varnames:
+        - MetrcisMappingCategory_Cpu
+        - MetrcisMappingCategory_Gpu
+        - MetrcisMappingCategory_Memory
+        - MetrcisMappingCategory_Disk
+        - MetrcisMappingCategory_Network
+    github_com_xiaoxlm_monitor-gateway_internal_enum.MetricUniqueID:
+      type: string
+      enum:
+        - cpu_avg_util
+        - mem_util
+        - gpu_mem_avg_util
+        - gpu_avg_util
+        - gpu_all_util
+        - gpu_avg_temp
+        - disk_util
+        - eth_recv_bytes_rate
+        - eth_trans_bytes_rate
+        - ib_recv_bytes_rate
+        - ib_trans_bytes_rate
+      x-enum-varnames:
+        - MetricUniqueID_Cpu_Avg_Util
+        - MetricUniqueID_Mem_Util
+        - MetricUniqueID_Gpu_Mem_Avg_Util
+        - MetricUniqueID_Gpu_Avg_Util
+        - MetricUniqueID_Gpu_All_Util
+        - MetricUniqueID_Gpu_Avg_Temp
+        - MetricUniqueID_Disk_Util
+        - MetricUniqueID_Eth_Recv
+        - MetricUniqueID_Eth_Trans
+        - MetricUniqueID_IB_Recv
+        - MetricUniqueID_IB_Trans
+    httputil.ErrorRESP:
+      type: object
+      properties:
+        code:
+          type: integer
+        msg:
+          type: string
+    httputil.MetricsInfo:
+      type: object
+      properties:
+        metric:
+          type: object
+          additionalProperties:
+            type: string
+        values:
+          type: array
+          description: 时序数值
+          items:
+            $ref: '#/components/schemas/httputil.MetricsValues'
+    httputil.MetricsValues:
+      type: object
+      properties:
+        color:
+          type: string
+        timestamp:
+          type: integer
+        value:
+          type: number
+    internal_model.MetricsMapping:
+      type: object
+      properties:
+        category:
+          type: object
+          description: 类别
+          allOf:
+            - $ref: '#/components/schemas/github_com_xiaoxlm_monitor-gateway_internal_enum.MetrcisMappingCategory'
+        createdAt:
+          type: string
+        deletedAt:
+          $ref: '#/components/schemas/mysql.DeletedTime'
+        description:
+          type: string
+          description: 描述
+        id:
+          type: integer
+        labels:
+          type: object
+          description: 指标标签(key:标签名；value:标签描述)
+          allOf:
+            - $ref: '#/components/schemas/datatypes.JSONMap'
+        metricUniqueID:
+          type: object
+          description: 告警唯一标识
+          allOf:
+            - $ref: '#/components/schemas/github_com_xiaoxlm_monitor-gateway_internal_enum.MetricUniqueID'
+        updatedAt:
+          type: string
+    mysql.DeletedTime:
+      type: object
+      properties:
+        time:
+          type: string
+        valid:
+          type: boolean
+          description: Valid is true if Time is not NULL
+x-original-swagger-version: "2.0"

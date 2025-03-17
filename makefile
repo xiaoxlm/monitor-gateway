@@ -31,3 +31,6 @@ docker:
 
 swagger:
 	swag init --pd -g ./cmd/$(WORKSPACE)/main.go -o ./cmd/$(WORKSPACE)/docs
+
+client:
+	oapi-codegen -config oapi-codegen-config.yaml ./cmd/$(WORKSPACE)/docs/openapi.yaml > pkg/client/client.gen.go

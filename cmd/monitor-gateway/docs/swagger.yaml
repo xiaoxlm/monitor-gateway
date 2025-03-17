@@ -44,28 +44,26 @@ definitions:
     type: object
   github_com_xiaoxlm_monitor-gateway_api_response.MetricsData:
     properties:
+      hostIP:
+        type: string
       metricUniqueID:
         allOf:
         - $ref: '#/definitions/github_com_xiaoxlm_monitor-gateway_internal_enum.MetricUniqueID'
         description: 指标唯一标识
+      multiMetricsData:
+        description: values 是否有多个值
+        type: boolean
       values:
         description: 时序数值
         items:
-          $ref: '#/definitions/github_com_xiaoxlm_monitor-gateway_api_response.MetricsValues'
+          $ref: '#/definitions/httputil.MetricsInfo'
         type: array
-    type: object
-  github_com_xiaoxlm_monitor-gateway_api_response.MetricsValues:
-    properties:
-      timestamp:
-        type: integer
-      value:
-        type: string
     type: object
   github_com_xiaoxlm_monitor-gateway_internal_enum.MetrcisMappingCategory:
     enum:
     - CPU
     - GPU
-    - MEMORY
+    - NODE_MEMORY
     - DISK
     - NETWORK
     type: string
@@ -77,8 +75,12 @@ definitions:
     - MetrcisMappingCategory_Network
   github_com_xiaoxlm_monitor-gateway_internal_enum.MetricUniqueID:
     enum:
-    - cpu_util
+    - cpu_avg_util
     - mem_util
+    - gpu_mem_avg_util
+    - gpu_avg_util
+    - gpu_all_util
+    - gpu_avg_temp
     - disk_util
     - eth_recv_bytes_rate
     - eth_trans_bytes_rate
@@ -86,8 +88,12 @@ definitions:
     - ib_trans_bytes_rate
     type: string
     x-enum-varnames:
-    - MetricUniqueID_Cpu_Util
+    - MetricUniqueID_Cpu_Avg_Util
     - MetricUniqueID_Mem_Util
+    - MetricUniqueID_Gpu_Mem_Avg_Util
+    - MetricUniqueID_Gpu_Avg_Util
+    - MetricUniqueID_Gpu_All_Util
+    - MetricUniqueID_Gpu_Avg_Temp
     - MetricUniqueID_Disk_Util
     - MetricUniqueID_Eth_Recv
     - MetricUniqueID_Eth_Trans
@@ -95,10 +101,31 @@ definitions:
     - MetricUniqueID_IB_Trans
   httputil.ErrorRESP:
     properties:
+      code:
+        type: integer
       msg:
         type: string
-      type:
+    type: object
+  httputil.MetricsInfo:
+    properties:
+      metric:
+        additionalProperties:
+          type: string
+        type: object
+      values:
+        description: 时序数值
+        items:
+          $ref: '#/definitions/httputil.MetricsValues'
+        type: array
+    type: object
+  httputil.MetricsValues:
+    properties:
+      color:
+        type: string
+      timestamp:
         type: integer
+      value:
+        type: number
     type: object
   internal_model.MetricsMapping:
     properties:
@@ -199,7 +226,7 @@ paths:
         enum:
         - CPU
         - GPU
-        - MEMORY
+        - NODE_MEMORY
         - DISK
         - NETWORK
         in: query
