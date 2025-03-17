@@ -102,7 +102,7 @@ func TestMetricsMapping_BatchCreate(t *testing.T) {
 				"IBN":     "算网名",
 				"host_ip": "节点ip",
 			},
-			Expression:     `avg by (host_ip)DCGM_FI_DEV_GPU_TEMP{IBN="$IBN", host_ip="$host_ip"})`,
+			Expression:     `avg by (host_ip)(DCGM_FI_DEV_GPU_TEMP{IBN="$IBN", host_ip="$host_ip"})`,
 			Desc:           "gpu平均温度",
 			Category:       enum.MetrcisMappingCategory_Gpu,
 			BoardPayloadID: 2,
