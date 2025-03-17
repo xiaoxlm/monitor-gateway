@@ -13,27 +13,15 @@ definitions:
     type: object
   github_com_xiaoxlm_monitor-gateway_api_request.MetricsQueryInfo:
     properties:
-      end:
-        description: 结束时间
-        type: integer
       labelValue:
         additionalProperties:
           type: string
         type: object
       metricUniqueID:
         $ref: '#/definitions/github_com_xiaoxlm_monitor-gateway_internal_enum.MetricUniqueID'
-      start:
-        description: 开始时间
-        type: integer
-      step:
-        description: 步长
-        type: integer
     required:
-    - end
     - labelValue
     - metricUniqueID
-    - start
-    - step
     type: object
   github_com_xiaoxlm_monitor-gateway_api_response.ListMetricsRESP:
     properties:

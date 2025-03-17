@@ -3,13 +3,13 @@ package factory
 import (
 	"context"
 	"github.com/xiaoxlm/monitor-gateway/api/domain/entity"
-	"github.com/xiaoxlm/monitor-gateway/api/request"
+	"github.com/xiaoxlm/monitor-gateway/api/domain/model"
 	_interface "github.com/xiaoxlm/monitor-gateway/pkg/metrics/interface"
 	"gorm.io/gorm"
 )
 
 // FactoryMetrics creates and initializes a new Metrics aggregate
-func FactoryMetrics(ctx context.Context, db *gorm.DB, tsDB _interface.TimeSeriesDB, queries []request.MetricsQueryInfo) (*entity.Metrics, error) {
+func FactoryMetrics(ctx context.Context, db *gorm.DB, tsDB _interface.TimeSeriesDB, queries []model.MetricsQuery) (*entity.Metrics, error) {
 	items, err := convertMetricsQueryInfoToItem(ctx, db, queries)
 	if err != nil {
 		return nil, err
@@ -22,7 +22,7 @@ func FactoryMetrics(ctx context.Context, db *gorm.DB, tsDB _interface.TimeSeries
 	return metrics, nil
 }
 
-func convertMetricsQueryInfoToItem(ctx context.Context, db *gorm.DB, queries []request.MetricsQueryInfo) ([]_interface.QueryFormItem, error) {
+func convertMetricsQueryInfoToItem(ctx context.Context, db *gorm.DB, queries []model.MetricsQuery) ([]_interface.QueryFormItem, error) {
 	ret := make([]_interface.QueryFormItem, 0, len(queries))
 	mm, err := FactoryMetricsMapping(ctx, db, queries)
 	if err != nil {

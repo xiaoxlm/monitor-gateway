@@ -162,17 +162,10 @@ const docTemplate = `{
         "github_com_xiaoxlm_monitor-gateway_api_request.MetricsQueryInfo": {
             "type": "object",
             "required": [
-                "end",
                 "labelValue",
-                "metricUniqueID",
-                "start",
-                "step"
+                "metricUniqueID"
             ],
             "properties": {
-                "end": {
-                    "description": "结束时间",
-                    "type": "integer"
-                },
                 "labelValue": {
                     "type": "object",
                     "additionalProperties": {
@@ -181,14 +174,6 @@ const docTemplate = `{
                 },
                 "metricUniqueID": {
                     "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_internal_enum.MetricUniqueID"
-                },
-                "start": {
-                    "description": "开始时间",
-                    "type": "integer"
-                },
-                "step": {
-                    "description": "步长",
-                    "type": "integer"
                 }
             }
         },
