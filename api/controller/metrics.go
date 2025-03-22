@@ -47,7 +47,7 @@ func ListMetrics(ctx context.Context, queryInfos []request.MetricsQueryInfo) (*r
 		return nil, err
 	}
 
-	var respData []response.MetricsData
+	var respData = make([]response.MetricsData, 0)
 	for idx, v := range multiExprValueList {
 		respData = append(respData, response.MetricsData{
 			MetricUniqueID:   queries[idx].MetricUniqueID,
