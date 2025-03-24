@@ -3,12 +3,15 @@ package entity
 import (
 	"fmt"
 	"github.com/xiaoxlm/monitor-gateway/internal/enum"
+	"github.com/xiaoxlm/monitor-gateway/internal/model"
 	"strings"
 )
 
 type MetricsMapping struct {
 	labelValue map[enum.MetricUniqueID]map[string]string
-	expression map[enum.MetricUniqueID]string // 数据库存的
+	//expression map[enum.MetricUniqueID]string // 数据库存的
+
+	mappingList []model.MetricsMapping
 
 	parsedExpression map[enum.MetricUniqueID]string
 }
@@ -33,7 +36,7 @@ func (m *MetricsMapping) checkLabels() error {
 }
 
 func (m *MetricsMapping) checkExpressions() error {
-	if len(m.expression) < 1 {
+	if len(m.mappingList) < 1 {
 		return fmt.Errorf("MetricsMapping entity expression is empty")
 	}
 
@@ -48,8 +51,8 @@ func (m *MetricsMapping) ListMetricUniqueID() []enum.MetricUniqueID {
 	return list
 }
 
-func (m *MetricsMapping) SetRawExpression(expression map[enum.MetricUniqueID]string) {
-	m.expression = expression
+func (m *MetricsMapping) SetMappingList(mappingList []model.MetricsMapping) {
+	m.mappingList = mappingList
 }
 
 func (m *MetricsMapping) GetParsedExpression(metricUniqueID enum.MetricUniqueID) (string, error) {
@@ -64,7 +67,10 @@ func (m *MetricsMapping) parseExpression() error {
 	if err := m.checkExpressions(); err != nil {
 		return err
 	}
-	for uniqueID, expr := range m.expression {
+
+	expressionMap := m.metricUniqueID2Expression()
+
+	for uniqueID, expr := range expressionMap {
 		var replaceExpr = expr
 		for k, v := range m.labelValue[uniqueID] {
 			replaceExpr = strings.ReplaceAll(replaceExpr, "$"+k, v)
@@ -72,4 +78,13 @@ func (m *MetricsMapping) parseExpression() error {
 		m.parsedExpression[uniqueID] = replaceExpr
 	}
 	return nil
+}
+
+func (m *MetricsMapping) metricUniqueID2Expression() map[enum.MetricUniqueID]string {
+	var expressionMap = make(map[enum.MetricUniqueID]string)
+	for _, metricsMapping := range m.mappingList {
+		expressionMap[metricsMapping.MetricUniqueID] = metricsMapping.Expression
+	}
+
+	return expressionMap
 }

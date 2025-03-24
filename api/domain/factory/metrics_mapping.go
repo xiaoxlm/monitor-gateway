@@ -26,12 +26,7 @@ func FactoryMetricsMapping(ctx context.Context, db *gorm.DB, queries []model.Met
 		return nil, err
 	}
 
-	var expressionMap = make(map[enum.MetricUniqueID]string)
-	for _, metricsMapping := range metricsMappingList {
-		expressionMap[metricsMapping.MetricUniqueID] = metricsMapping.Expression
-	}
-
-	mm.SetRawExpression(expressionMap)
+	mm.SetMappingList(metricsMappingList)
 
 	return mm, nil
 }
