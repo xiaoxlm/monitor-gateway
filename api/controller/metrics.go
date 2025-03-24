@@ -3,8 +3,6 @@ package controller
 import (
 	"context"
 	"fmt"
-	"github.com/xiaoxlm/monitor-gateway/api/domain/entity"
-
 	"github.com/spf13/cast"
 
 	"github.com/xiaoxlm/monitor-gateway/api/domain/factory"
@@ -42,15 +40,13 @@ func ListMetrics(ctx context.Context, queryInfos []request.MetricsQueryInfo) (*r
 		return nil, err
 	}
 
-	multiExprValueList, err := m.ListValues(ctx)
+	data, err := m.ListValues(ctx, queries)
 	if err != nil {
 		return nil, err
 	}
 
-	respData := entity.MetricsFromExpr2RESPMetricsData(queries, multiExprValueList)
-
 	return &response.ListMetricsRESP{
-		Data: respData,
+		Data: data,
 	}, nil
 }
 

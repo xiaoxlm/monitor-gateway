@@ -8,6 +8,8 @@ import (
 	"github.com/xiaoxlm/monitor-gateway/api/response"
 	"github.com/xiaoxlm/monitor-gateway/internal/enum"
 	_interface "github.com/xiaoxlm/monitor-gateway/pkg/metrics/interface"
+
+	model2 "github.com/xiaoxlm/monitor-gateway/internal/model"
 )
 
 // MetricsQuery represents a domain object for metrics queries
@@ -23,6 +25,9 @@ type Metrics struct {
 	queries      []metricsQuery
 	timeSeriesDB _interface.TimeSeriesDB
 	values       []model.Value
+
+	metricsMapping map[enum.MetricUniqueID]model2.MetricsMapping
+	panel          *domain_model.Panel
 }
 
 // NewMetrics creates a new Metrics aggregate
@@ -66,15 +71,21 @@ func (m *Metrics) FetchMetrics(ctx context.Context) error {
 }
 
 // GetValues returns the fetched metrics values
-func (m *Metrics) ListValues(ctx context.Context) ([]httputil.MetricsFromExpr, error) {
+func (m *Metrics) ListValues(ctx context.Context, queries []domain_model.MetricsQuery) ([]response.MetricsData, error) {
 	if err := m.FetchMetrics(ctx); err != nil {
 		return nil, err
 	}
 
-	return httputil.PromCommonModelValue(m.values)
+	multiExprValueList, err := httputil.PromCommonModelValue(m.values)
+	if err != nil {
+		return nil, err
+	}
+
+	return m.metricsFromExpr2RESPMetricsData(queries, multiExprValueList), nil
+
 }
 
-func MetricsFromExpr2RESPMetricsData(queries []domain_model.MetricsQuery, multiExprValueList []httputil.MetricsFromExpr) []response.MetricsData {
+func (m *Metrics) metricsFromExpr2RESPMetricsData(queries []domain_model.MetricsQuery, multiExprValueList []httputil.MetricsFromExpr) []response.MetricsData {
 	var respData = make([]response.MetricsData, 0)
 	for idx, v := range multiExprValueList {
 		respData = append(respData, response.MetricsData{

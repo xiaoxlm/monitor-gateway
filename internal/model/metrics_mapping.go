@@ -25,3 +25,12 @@ type MetricsMapping struct {
 func (MetricsMapping) TableName() string {
 	return "metrics_mapping"
 }
+
+func MetricUniqueID2MetricsMapping(list []MetricsMapping) map[enum.MetricUniqueID]MetricsMapping {
+	ret := map[enum.MetricUniqueID]MetricsMapping{}
+	for _, m := range list {
+		ret[m.MetricUniqueID] = m
+	}
+
+	return ret
+}
