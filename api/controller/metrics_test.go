@@ -2,11 +2,9 @@ package controller
 
 import (
 	"context"
-	"fmt"
 	"github.com/xiaoxlm/monitor-gateway/api/request"
 	"github.com/xiaoxlm/monitor-gateway/pkg/util"
 	"testing"
-	"time"
 )
 
 func TestMetrics_ListMetrics(t *testing.T) {
@@ -15,25 +13,25 @@ func TestMetrics_ListMetrics(t *testing.T) {
 
 	queries := []request.MetricsQueryInfo{
 		{
-			MetricUniqueID: `gpu_all_util`,
-			LabelValue: map[string]string{
-				"IBN":     "算网A",
-				"host_ip": "10.10.1.84",
-				"start":   fmt.Sprintf("%d", time.Now().Unix()),
-				"end":     fmt.Sprintf("%d", time.Now().Unix()),
-				"step":    "10",
-			},
-		},
-		{
 			MetricUniqueID: `cpu_avg_util`,
 			LabelValue: map[string]string{
 				"IBN":     "算网A",
-				"host_ip": "10.10.1.84",
-				"start":   fmt.Sprintf("%d", time.Now().Unix()),
-				"end":     fmt.Sprintf("%d", time.Now().Unix()),
+				"host_ip": "10.10.1.85",
+				"end":     "1742803857",
+				"start":   "1742803857",
 				"step":    "10",
 			},
 		},
+		//{
+		//	MetricUniqueID: `gpu_all_util`,
+		//	LabelValue: map[string]string{
+		//		"IBN":     "算网A",
+		//		"host_ip": "10.10.1.84",
+		//		"start":   fmt.Sprintf("%d", time.Now().Unix()),
+		//		"end":     fmt.Sprintf("%d", time.Now().Unix()),
+		//		"step":    "10",
+		//	},
+		//},
 		//{
 		//	MetricUniqueID: `mem_util`,
 		//	IBN:            "算网A",

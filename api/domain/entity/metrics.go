@@ -97,20 +97,6 @@ func (m *Metrics) metricsFromExpr2RESPMetricsData(queries []domain_model.Metrics
 		if err := m.setColor(metricUniqueID, v); err != nil {
 			return nil, err
 		}
-		//boardPayloadID := m.metricUniqueID2MetricsMapping[metricUniqueID].BoardPayloadID
-		//panelID := m.metricUniqueID2MetricsMapping[metricUniqueID].PanelID
-		//panel, err := model2.GetPanelByBoardIDAndPanelID(m.boardPayloadList, boardPayloadID, panelID)
-		//if err != nil {
-		//	return nil, err
-		//}
-		//
-		//colorH := colorHandlerVO{
-		//	panel:       panel,
-		//	metricsData: v,
-		//}
-		//if err = colorH.setMetricsDataColor(); err != nil {
-		//	return nil, err
-		//}
 
 		respData = append(respData, response.MetricsData{
 			MetricUniqueID:   metricUniqueID,

@@ -75,6 +75,7 @@ func (m *MetricsMapping) parseExpression() error {
 	for uniqueID, expr := range expressionMap {
 		var replaceExpr = expr
 		for k, v := range m.labelValue[uniqueID] {
+			k = m.replaceLabelKey(k)
 			replaceExpr = strings.ReplaceAll(replaceExpr, "$"+k, v)
 		}
 		m.parsedExpression[uniqueID] = replaceExpr
@@ -89,4 +90,18 @@ func (m *MetricsMapping) metricUniqueID2Expression() map[enum.MetricUniqueID]str
 	}
 
 	return expressionMap
+}
+
+func (m *MetricsMapping) replaceLabelKey(key string) string {
+	tmpKey := strings.ToLower(key)
+
+	if tmpKey == "ibn" {
+		return "IBN"
+	}
+
+	if tmpKey == "hostip" {
+		return "host_ip"
+	}
+
+	return key
 }

@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
 
 	"github.com/xiaoxlm/monitor-gateway/api/domain/factory"
@@ -92,6 +93,14 @@ func ConvertMetricsQueryInfo(queries []request.MetricsQueryInfo) (ret []domain_m
 				return nil, err
 			}
 
+		}
+
+		if _, hostIPOK := query.LabelValue["host_ip"]; !hostIPOK {
+			logrus.Warnf("'host_ip' not found in request label value")
+		}
+
+		if _, hostIPOK := query.LabelValue["IBN"]; !hostIPOK {
+			logrus.Warnf("'IBN' not found in request label value")
 		}
 
 		ret = append(ret, domain_model.MetricsQuery{
