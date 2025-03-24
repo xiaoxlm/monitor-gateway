@@ -1,7 +1,7 @@
 package model
 
 import (
-	"fmt"
+	"github.com/stretchr/testify/assert"
 	"github.com/xiaoxlm/monitor-gateway/config"
 	"testing"
 )
@@ -19,5 +19,6 @@ func TestBoardPayload(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	fmt.Print(panel)
+	assert.Equal(t, true, panel != nil)
+	assert.Equal(t, true, panel.ID != "")
 }

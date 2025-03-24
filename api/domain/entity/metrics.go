@@ -2,6 +2,8 @@ package entity
 
 import (
 	"context"
+	"sort"
+
 	"github.com/lie-flat-planet/httputil"
 	"github.com/prometheus/common/model"
 	domain_model "github.com/xiaoxlm/monitor-gateway/api/domain/model"
@@ -26,12 +28,12 @@ type Metrics struct {
 	timeSeriesDB _interface.TimeSeriesDB
 	values       []model.Value
 
+	boardPayloadList              []model2.BoardPayload
 	metricUniqueID2MetricsMapping map[enum.MetricUniqueID]model2.MetricsMapping
-	panel                         *domain_model.Panel
 }
 
 // NewMetrics creates a new Metrics aggregate
-func NewMetrics(queries []_interface.QueryFormItem, tsDB _interface.TimeSeriesDB, metricUniqueID2MetricsMapping map[enum.MetricUniqueID]model2.MetricsMapping, panel *domain_model.Panel) *Metrics {
+func NewMetrics(queries []_interface.QueryFormItem, tsDB _interface.TimeSeriesDB, metricUniqueID2MetricsMapping map[enum.MetricUniqueID]model2.MetricsMapping, boardPayloadList []model2.BoardPayload) *Metrics {
 	metricQueries := make([]metricsQuery, len(queries))
 	for i, q := range queries {
 		metricQueries[i] = metricsQuery{
@@ -46,7 +48,7 @@ func NewMetrics(queries []_interface.QueryFormItem, tsDB _interface.TimeSeriesDB
 		queries:                       metricQueries,
 		timeSeriesDB:                  tsDB,
 		metricUniqueID2MetricsMapping: metricUniqueID2MetricsMapping,
-		panel:                         panel,
+		boardPayloadList:              boardPayloadList,
 	}
 }
 
@@ -83,22 +85,57 @@ func (m *Metrics) ListValues(ctx context.Context, queries []domain_model.Metrics
 		return nil, err
 	}
 
-	return m.metricsFromExpr2RESPMetricsData(queries, multiExprValueList), nil
+	return m.metricsFromExpr2RESPMetricsData(queries, multiExprValueList)
 
 }
 
-func (m *Metrics) metricsFromExpr2RESPMetricsData(queries []domain_model.MetricsQuery, multiExprValueList []httputil.MetricsFromExpr) []response.MetricsData {
+func (m *Metrics) metricsFromExpr2RESPMetricsData(queries []domain_model.MetricsQuery, multiExprValueList []httputil.MetricsFromExpr) ([]response.MetricsData, error) {
+
 	var respData = make([]response.MetricsData, 0)
 	for idx, v := range multiExprValueList {
+		metricUniqueID := queries[idx].MetricUniqueID
+		if err := m.setColor(metricUniqueID, v); err != nil {
+			return nil, err
+		}
+		//boardPayloadID := m.metricUniqueID2MetricsMapping[metricUniqueID].BoardPayloadID
+		//panelID := m.metricUniqueID2MetricsMapping[metricUniqueID].PanelID
+		//panel, err := model2.GetPanelByBoardIDAndPanelID(m.boardPayloadList, boardPayloadID, panelID)
+		//if err != nil {
+		//	return nil, err
+		//}
+		//
+		//colorH := colorHandlerVO{
+		//	panel:       panel,
+		//	metricsData: v,
+		//}
+		//if err = colorH.setMetricsDataColor(); err != nil {
+		//	return nil, err
+		//}
+
 		respData = append(respData, response.MetricsData{
-			MetricUniqueID:   queries[idx].MetricUniqueID,
+			MetricUniqueID:   metricUniqueID,
 			HostIP:           v[0].Metric["host_ip"],
 			MultiMetricsData: MetricMultiDataMapping(queries[idx].MetricUniqueID),
 			Values:           v,
 		})
 	}
 
-	return respData
+	return respData, nil
+}
+
+func (m *Metrics) setColor(metricUniqueID enum.MetricUniqueID, data httputil.MetricsFromExpr) error {
+	boardPayloadID := m.metricUniqueID2MetricsMapping[metricUniqueID].BoardPayloadID
+	panelID := m.metricUniqueID2MetricsMapping[metricUniqueID].PanelID
+	panel, err := model2.GetPanelByBoardIDAndPanelID(m.boardPayloadList, boardPayloadID, panelID)
+	if err != nil {
+		return err
+	}
+
+	colorH := colorHandlerVO{
+		panel:       panel,
+		metricsData: data,
+	}
+	return colorH.setMetricsDataColor()
 }
 
 func MetricMultiDataMapping(uniqueID enum.MetricUniqueID) bool {
@@ -108,4 +145,17 @@ func MetricMultiDataMapping(uniqueID enum.MetricUniqueID) bool {
 	default:
 		return false
 	}
+}
+
+func sortThresholdsStepsByValue(p model2.Panel) []model2.Step {
+	thresholdsSteps := p.Options.Thresholds.Steps
+
+	sort.Slice(thresholdsSteps, func(i, j int) bool {
+		if thresholdsSteps[i].Value == nil || thresholdsSteps[j].Value == nil {
+			return false
+		}
+		return *thresholdsSteps[i].Value > *thresholdsSteps[j].Value
+	})
+
+	return thresholdsSteps
 }

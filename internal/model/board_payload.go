@@ -33,6 +33,7 @@ func (bp BoardPayload) ConvertToDashboard() (Dashboard, error) {
 }
 
 func GetPanelByBoardIDAndPanelID(boardPayloads []BoardPayload, boardPayloadID uint, panelID string) (*Panel, error) {
+
 	for _, bp := range boardPayloads {
 		if bp.ID.ID != boardPayloadID {
 			continue
@@ -94,54 +95,70 @@ type Datasource struct {
 }
 
 type Panel struct {
-	Type            string                 `json:"type"`
-	ID              string                 `json:"id"`
-	Layout          Layout                 `json:"layout"`
-	Version         string                 `json:"version"`
-	DatasourceCate  string                 `json:"datasourceCate"`
-	DatasourceValue string                 `json:"datasourceValue"`
-	Targets         []Target               `json:"targets"`
-	Transformations []Transformation       `json:"transformations"`
-	Name            string                 `json:"name"`
-	MaxPerRow       int                    `json:"maxPerRow,omitempty"`
-	Custom          map[string]interface{} `json:"custom,omitempty"`
-	Options         map[string]interface{} `json:"options,omitempty"`
-	Links           []interface{}          `json:"links,omitempty"`
-	Description     string                 `json:"description,omitempty"`
-	Collapsed       bool                   `json:"collapsed,omitempty"`
-	Panels          []Panel                `json:"panels,omitempty"`
-	GraphTooltip    string                 `json:"graphTooltip,omitempty"`
-	Overrides       []Override             `json:"overrides,omitempty"`
+	ID              string           `json:"id"`
+	Name            string           `json:"name"`
+	Type            string           `json:"type"`
+	Links           []Link           `json:"links"`
+	Custom          Custom           `json:"custom"`
+	Layout          Layout           `json:"layout"`
+	Options         Options          `json:"options"`
+	Targets         []Tgt            `json:"targets"`
+	Version         string           `json:"version"`
+	MaxPerRow       int              `json:"maxPerRow"`
+	Description     string           `json:"description"`
+	DatasourceCate  string           `json:"datasourceCate"`
+	DatasourceValue string           `json:"datasourceValue"`
+	Transformations []Transformation `json:"transformations"`
+}
+
+type Link struct {
+	// Add fields as needed
+}
+
+type Custom struct {
+	Calc       string `json:"calc"`
+	TextMode   string `json:"textMode"`
+	ValueField string `json:"valueField"`
 }
 
 type Layout struct {
 	H           int    `json:"h"`
+	I           string `json:"i"`
 	W           int    `json:"w"`
 	X           int    `json:"x"`
 	Y           int    `json:"y"`
-	I           string `json:"i"`
 	IsResizable bool   `json:"isResizable"`
 }
 
-type Target struct {
-	RefId         string `json:"refId,omitempty"`
+type Options struct {
+	Thresholds      Thresholds      `json:"thresholds"`
+	StandardOptions StandardOptions `json:"standardOptions"`
+}
+
+type Thresholds struct {
+	Steps []Step `json:"steps"`
+}
+
+type Step struct {
+	Type  string   `json:"type"`
+	Color string   `json:"color"`
+	Value *float64 `json:"value"` // Using pointer to handle null values
+}
+
+type StandardOptions struct {
+	Max      float64 `json:"max"`
+	Min      float64 `json:"min"`
+	Util     string  `json:"util"`
+	Decimals int     `json:"decimals"`
+}
+
+type Tgt struct {
 	Expr          string `json:"expr"`
-	MaxDataPoints int    `json:"maxDataPoints,omitempty"`
-	Legend        string `json:"legend,omitempty"`
-	Instant       bool   `json:"instant,omitempty"`
-	Mode          string `json:"__mode__,omitempty"`
+	RefID         string `json:"refId"`
+	MaxDataPoints int    `json:"maxDataPoints"`
 }
 
 type Transformation struct {
 	ID      string                 `json:"id"`
 	Options map[string]interface{} `json:"options"`
-}
-
-type Override struct {
-	Matcher    Matcher     `json:"matcher"`
-	Properties interface{} `json:"properties"`
-}
-
-type Matcher struct {
-	ID string `json:"id"`
 }
