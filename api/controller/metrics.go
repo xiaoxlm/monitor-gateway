@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"fmt"
+	"github.com/xiaoxlm/monitor-gateway/api/domain/entity"
 
 	"github.com/spf13/cast"
 
@@ -10,7 +11,6 @@ import (
 	"github.com/xiaoxlm/monitor-gateway/api/domain/repo"
 	"github.com/xiaoxlm/monitor-gateway/api/request"
 	"github.com/xiaoxlm/monitor-gateway/api/response"
-	"github.com/xiaoxlm/monitor-gateway/internal/enum"
 	"github.com/xiaoxlm/monitor-gateway/internal/model"
 
 	"github.com/xiaoxlm/monitor-gateway/config"
@@ -42,33 +42,16 @@ func ListMetrics(ctx context.Context, queryInfos []request.MetricsQueryInfo) (*r
 		return nil, err
 	}
 
-	multiExprValueList, err := m.ListValues()
+	multiExprValueList, err := m.ListValues(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	var respData = make([]response.MetricsData, 0)
-	for idx, v := range multiExprValueList {
-		respData = append(respData, response.MetricsData{
-			MetricUniqueID:   queries[idx].MetricUniqueID,
-			HostIP:           v[0].Metric["host_ip"],
-			MultiMetricsData: MetricMultiDataMapping(queries[idx].MetricUniqueID),
-			Values:           v,
-		})
-	}
+	respData := entity.MetricsFromExpr2RESPMetricsData(queries, multiExprValueList)
 
 	return &response.ListMetricsRESP{
 		Data: respData,
 	}, nil
-}
-
-func MetricMultiDataMapping(uniqueID enum.MetricUniqueID) bool {
-	switch uniqueID {
-	case enum.MetricUniqueID_Gpu_All_Util:
-		return true
-	default:
-		return false
-	}
 }
 
 const (

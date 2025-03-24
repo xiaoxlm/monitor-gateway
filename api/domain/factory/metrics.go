@@ -16,12 +16,11 @@ func FactoryMetrics(ctx context.Context, db *gorm.DB, tsDB _interface.TimeSeries
 	}
 
 	metrics := entity.NewMetrics(items, tsDB)
-	if err = metrics.FetchMetrics(ctx); err != nil {
-		return nil, err
-	}
+
 	return metrics, nil
 }
 
+// convertMetricsQueryInfoToItem 获取完整表达式并转换数据结构
 func convertMetricsQueryInfoToItem(ctx context.Context, db *gorm.DB, queries []model.MetricsQuery) ([]_interface.QueryFormItem, error) {
 	ret := make([]_interface.QueryFormItem, 0, len(queries))
 	mm, err := FactoryMetricsMapping(ctx, db, queries)

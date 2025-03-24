@@ -4,6 +4,9 @@ import (
 	"context"
 	"github.com/lie-flat-planet/httputil"
 	"github.com/prometheus/common/model"
+	domain_model "github.com/xiaoxlm/monitor-gateway/api/domain/model"
+	"github.com/xiaoxlm/monitor-gateway/api/response"
+	"github.com/xiaoxlm/monitor-gateway/internal/enum"
 	_interface "github.com/xiaoxlm/monitor-gateway/pkg/metrics/interface"
 )
 
@@ -63,15 +66,33 @@ func (m *Metrics) FetchMetrics(ctx context.Context) error {
 }
 
 // GetValues returns the fetched metrics values
-func (m *Metrics) ListValues() ([]httputil.MetricsFromExpr, error) {
+func (m *Metrics) ListValues(ctx context.Context) ([]httputil.MetricsFromExpr, error) {
+	if err := m.FetchMetrics(ctx); err != nil {
+		return nil, err
+	}
+
 	return httputil.PromCommonModelValue(m.values)
 }
 
-//type MetricsFormedData struct {
-//	Values []Values
-//}
-//
-//type Values struct {
-//	Value     string
-//	Timestamp int64
-//}
+func MetricsFromExpr2RESPMetricsData(queries []domain_model.MetricsQuery, multiExprValueList []httputil.MetricsFromExpr) []response.MetricsData {
+	var respData = make([]response.MetricsData, 0)
+	for idx, v := range multiExprValueList {
+		respData = append(respData, response.MetricsData{
+			MetricUniqueID:   queries[idx].MetricUniqueID,
+			HostIP:           v[0].Metric["host_ip"],
+			MultiMetricsData: MetricMultiDataMapping(queries[idx].MetricUniqueID),
+			Values:           v,
+		})
+	}
+
+	return respData
+}
+
+func MetricMultiDataMapping(uniqueID enum.MetricUniqueID) bool {
+	switch uniqueID {
+	case enum.MetricUniqueID_Gpu_All_Util:
+		return true
+	default:
+		return false
+	}
+}
