@@ -8,9 +8,7 @@ import (
 )
 
 type MetricsMapping struct {
-	labelValue map[enum.MetricUniqueID]map[string]string
-	//expression map[enum.MetricUniqueID]string // 数据库存的
-
+	labelValue  map[enum.MetricUniqueID]map[string]string
 	mappingList []model.MetricsMapping
 
 	parsedExpression map[enum.MetricUniqueID]string
@@ -53,6 +51,10 @@ func (m *MetricsMapping) ListMetricUniqueID() []enum.MetricUniqueID {
 
 func (m *MetricsMapping) SetMappingList(mappingList []model.MetricsMapping) {
 	m.mappingList = mappingList
+}
+
+func (m *MetricsMapping) GetMappingList() []model.MetricsMapping {
+	return m.mappingList
 }
 
 func (m *MetricsMapping) GetParsedExpression(metricUniqueID enum.MetricUniqueID) (string, error) {

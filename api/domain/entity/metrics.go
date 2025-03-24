@@ -26,12 +26,12 @@ type Metrics struct {
 	timeSeriesDB _interface.TimeSeriesDB
 	values       []model.Value
 
-	metricsMapping map[enum.MetricUniqueID]model2.MetricsMapping
-	panel          *domain_model.Panel
+	metricUniqueID2MetricsMapping map[enum.MetricUniqueID]model2.MetricsMapping
+	panel                         *domain_model.Panel
 }
 
 // NewMetrics creates a new Metrics aggregate
-func NewMetrics(queries []_interface.QueryFormItem, tsDB _interface.TimeSeriesDB) *Metrics {
+func NewMetrics(queries []_interface.QueryFormItem, tsDB _interface.TimeSeriesDB, metricUniqueID2MetricsMapping map[enum.MetricUniqueID]model2.MetricsMapping, panel *domain_model.Panel) *Metrics {
 	metricQueries := make([]metricsQuery, len(queries))
 	for i, q := range queries {
 		metricQueries[i] = metricsQuery{
@@ -43,8 +43,10 @@ func NewMetrics(queries []_interface.QueryFormItem, tsDB _interface.TimeSeriesDB
 	}
 
 	return &Metrics{
-		queries:      metricQueries,
-		timeSeriesDB: tsDB,
+		queries:                       metricQueries,
+		timeSeriesDB:                  tsDB,
+		metricUniqueID2MetricsMapping: metricUniqueID2MetricsMapping,
+		panel:                         panel,
 	}
 }
 
