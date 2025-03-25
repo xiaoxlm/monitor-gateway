@@ -11,13 +11,8 @@ type colorHandlerVO struct {
 	metricsData httputil.MetricsFromExpr
 }
 
-//func (vo *colorHandlerVO) getMetricsData() httputil.MetricsFromExpr {
-//	return vo.metricsData
-//}
-
 func (vo *colorHandlerVO) setMetricsDataColor() error {
 	for i, data := range vo.metricsData {
-
 		for j := range data.Values {
 			if err := vo.setColorByMetricsValues(&data.Values[j]); err != nil {
 				return err

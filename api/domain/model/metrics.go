@@ -9,3 +9,12 @@ type MetricsQuery struct {
 	End            int64 // 结束时间
 	Step           uint  // 步长
 }
+
+func ListMetricsQueryMetricUniqueID(queries []MetricsQuery) []enum.MetricUniqueID {
+	var ret []enum.MetricUniqueID
+	for _, q := range queries {
+		ret = append(ret, q.MetricUniqueID)
+	}
+
+	return ret
+}

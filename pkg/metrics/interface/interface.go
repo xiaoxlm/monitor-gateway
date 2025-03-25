@@ -14,5 +14,5 @@ type QueryFormItem struct {
 }
 
 type TimeSeriesDB interface {
-	BatchQueryRange(ctx context.Context, queries []QueryFormItem) ([]model.Value, error)
+	QueryRange(ctx context.Context, queries QueryFormItem) (model.Value, error)
 }

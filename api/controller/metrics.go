@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
+	"github.com/xiaoxlm/monitor-gateway/api/domain/entity"
 	"github.com/xiaoxlm/monitor-gateway/internal/enum"
 
-	"github.com/xiaoxlm/monitor-gateway/api/domain/factory"
 	"github.com/xiaoxlm/monitor-gateway/api/domain/repo"
 	"github.com/xiaoxlm/monitor-gateway/api/request"
 	"github.com/xiaoxlm/monitor-gateway/api/response"
@@ -37,12 +37,12 @@ func ListMetrics(ctx context.Context, queryInfos []request.MetricsQueryInfo) (*r
 		return nil, err
 	}
 
-	metrics, err := factory.FactoryMetrics(ctx, db, prom, queries)
+	aggr, err := entity.FactoryAggr(ctx, db, prom, queries)
 	if err != nil {
 		return nil, err
 	}
 
-	data, err := metrics.ListValues(ctx, queries)
+	data, err := aggr.ListMetricsValue(ctx)
 	if err != nil {
 		return nil, err
 	}

@@ -1,23 +1,31 @@
 package entity
 
 import (
+	"context"
 	"fmt"
-	"github.com/xiaoxlm/monitor-gateway/internal/enum"
+	"github.com/lie-flat-planet/httputil"
+	prom_model "github.com/prometheus/common/model"
+	domain_model "github.com/xiaoxlm/monitor-gateway/api/domain/model"
 	"github.com/xiaoxlm/monitor-gateway/internal/model"
+	_interface "github.com/xiaoxlm/monitor-gateway/pkg/metrics/interface"
 	"strings"
 )
 
 type MetricsMapping struct {
-	labelValue  map[enum.MetricUniqueID]map[string]string
-	mappingList []model.MetricsMapping
+	mapping      *model.MetricsMapping
+	query        *domain_model.MetricsQuery
+	timeSeriesDB _interface.TimeSeriesDB
 
-	parsedExpression map[enum.MetricUniqueID]string
+	parsedExpression string
+
+	promValue prom_model.Value
 }
 
-func NewMetricsMapping(labelValue map[enum.MetricUniqueID]map[string]string) (*MetricsMapping, error) {
+func NewMetricsMapping(query *domain_model.MetricsQuery, mapping model.MetricsMapping, timeSeriesDB _interface.TimeSeriesDB) (*MetricsMapping, error) {
 	mm := &MetricsMapping{
-		labelValue:       labelValue,
-		parsedExpression: make(map[enum.MetricUniqueID]string),
+		query:        query,
+		mapping:      &mapping,
+		timeSeriesDB: timeSeriesDB,
 	}
 
 	err := mm.checkLabels()
@@ -26,70 +34,67 @@ func NewMetricsMapping(labelValue map[enum.MetricUniqueID]map[string]string) (*M
 }
 
 func (m *MetricsMapping) checkLabels() error {
-	if len(m.labelValue) < 1 {
+	if len(m.query.LabelValue) < 1 {
 		return fmt.Errorf("MetricsMapping entity labels is empty")
 	}
 
 	return nil
 }
 
-func (m *MetricsMapping) checkExpressions() error {
-	if len(m.mappingList) < 1 {
-		return fmt.Errorf("MetricsMapping entity expression is empty")
-	}
-
+func (m *MetricsMapping) checkExpression() error {
 	return nil
 }
 
-func (m *MetricsMapping) ListMetricUniqueID() []enum.MetricUniqueID {
-	var list []enum.MetricUniqueID
-	for k := range m.labelValue {
-		list = append(list, k)
-	}
-	return list
+func (m *MetricsMapping) getMapping() *model.MetricsMapping {
+	return m.mapping
 }
 
-func (m *MetricsMapping) SetMappingList(mappingList []model.MetricsMapping) {
-	m.mappingList = mappingList
+func (m *MetricsMapping) getQuery() *domain_model.MetricsQuery {
+	return m.query
 }
 
-func (m *MetricsMapping) GetMappingList() []model.MetricsMapping {
-	return m.mappingList
-}
-
-func (m *MetricsMapping) GetParsedExpression(metricUniqueID enum.MetricUniqueID) (string, error) {
+func (m *MetricsMapping) fetchMetrics(ctx context.Context) error {
 	if err := m.parseExpression(); err != nil {
-		return "", err
-	}
-
-	return m.parsedExpression[metricUniqueID], nil
-}
-
-func (m *MetricsMapping) parseExpression() error {
-	if err := m.checkExpressions(); err != nil {
 		return err
 	}
 
-	expressionMap := m.metricUniqueID2Expression()
-
-	for uniqueID, expr := range expressionMap {
-		var replaceExpr = expr
-		for k, v := range m.labelValue[uniqueID] {
-			k = m.replaceLabelKey(k)
-			replaceExpr = strings.ReplaceAll(replaceExpr, "$"+k, v)
-		}
-		m.parsedExpression[uniqueID] = replaceExpr
+	value, err := m.timeSeriesDB.QueryRange(ctx, _interface.QueryFormItem{
+		Start: m.query.Start,
+		End:   m.query.End,
+		Step:  m.query.Step,
+		Query: m.parsedExpression,
+	})
+	if err != nil {
+		return err
 	}
+
+	m.promValue = value
 	return nil
 }
 
-func (m *MetricsMapping) metricUniqueID2Expression() map[enum.MetricUniqueID]string {
-	var expressionMap = make(map[enum.MetricUniqueID]string)
-	for _, metricsMapping := range m.mappingList {
-		expressionMap[metricsMapping.MetricUniqueID] = metricsMapping.Expression
+func (m *MetricsMapping) getMetricsFromExpr(ctx context.Context) (httputil.MetricsFromExpr, error) {
+	if err := m.fetchMetrics(ctx); err != nil {
+		return nil, err
 	}
 
-	return expressionMap
+	return httputil.ParseModelValue2MetricsData(m.promValue)
+}
+
+func (m *MetricsMapping) parseExpression() error {
+	if err := m.checkExpression(); err != nil {
+		return err
+	}
+
+	var replaceExpr = m.mapping.Expression
+
+	for k, v := range m.query.LabelValue {
+		k = m.replaceLabelKey(k)
+		replaceExpr = strings.ReplaceAll(replaceExpr, "$"+k, v)
+	}
+
+	m.parsedExpression = replaceExpr
+
+	return nil
 }
 
 func (m *MetricsMapping) replaceLabelKey(key string) string {
