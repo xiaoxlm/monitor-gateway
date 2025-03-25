@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
+	"github.com/xiaoxlm/monitor-gateway/internal/enum"
 
 	"github.com/xiaoxlm/monitor-gateway/api/domain/factory"
 	"github.com/xiaoxlm/monitor-gateway/api/domain/repo"
@@ -36,12 +37,12 @@ func ListMetrics(ctx context.Context, queryInfos []request.MetricsQueryInfo) (*r
 		return nil, err
 	}
 
-	m, err := factory.FactoryMetrics(ctx, db, prom, queries)
+	metrics, err := factory.FactoryMetrics(ctx, db, prom, queries)
 	if err != nil {
 		return nil, err
 	}
 
-	data, err := m.ListValues(ctx, queries)
+	data, err := metrics.ListValues(ctx, queries)
 	if err != nil {
 		return nil, err
 	}
@@ -103,8 +104,14 @@ func ConvertMetricsQueryInfo(queries []request.MetricsQueryInfo) (ret []domain_m
 			logrus.Warnf("'IBN' not found in request label value")
 		}
 
+		metricUniqueID := enum.MetricUniqueID(query.MetricUniqueID)
+
+		if !enum.CheckMetricUniqueIDExist(metricUniqueID) {
+			return nil, fmt.Errorf(`metricUniqueID "%s" is invalid`, query.MetricUniqueID)
+		}
+
 		ret = append(ret, domain_model.MetricsQuery{
-			MetricUniqueID: query.MetricUniqueID,
+			MetricUniqueID: metricUniqueID,
 			LabelValue:     query.LabelValue,
 			Start:          start,
 			End:            end,

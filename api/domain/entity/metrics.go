@@ -100,6 +100,7 @@ func (m *Metrics) metricsFromExpr2RESPMetricsData(queries []domain_model.Metrics
 
 		respData = append(respData, response.MetricsData{
 			MetricUniqueID:   metricUniqueID,
+			Label:            queries[idx].LabelValue,
 			HostIP:           v[0].Metric["host_ip"],
 			MultiMetricsData: MetricMultiDataMapping(queries[idx].MetricUniqueID),
 			Values:           v,

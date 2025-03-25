@@ -3,12 +3,14 @@ module github.com/xiaoxlm/monitor-gateway
 go 1.24.0
 
 require (
+	github.com/deckarep/golang-set/v2 v2.8.0
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/lie-flat-planet/httputil v0.0.8
 	github.com/lie-flat-planet/service-init-tool v1.0.1
 	github.com/prometheus/client_golang v1.21.0
 	github.com/prometheus/common v0.62.0
+	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cast v1.7.1
 	github.com/stretchr/testify v1.10.0
 	github.com/swaggo/files v1.0.1
@@ -56,7 +58,6 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
-	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	golang.org/x/arch v0.8.0 // indirect

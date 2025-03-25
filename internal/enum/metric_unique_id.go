@@ -1,5 +1,9 @@
 package enum
 
+import (
+	golang_set "github.com/deckarep/golang-set/v2"
+)
+
 type MetricUniqueID string
 
 const (
@@ -15,3 +19,22 @@ const (
 	MetricUniqueID_IB_Recv          MetricUniqueID = "ib_recv_bytes_rate"
 	MetricUniqueID_IB_Trans         MetricUniqueID = "ib_trans_bytes_rate"
 )
+
+var metricUniqueIDList []MetricUniqueID = []MetricUniqueID{
+	MetricUniqueID_Cpu_Avg_Util,
+	MetricUniqueID_Mem_Util,
+	MetricUniqueID_Gpu_Mem_Avg_Util,
+	MetricUniqueID_Gpu_Avg_Util,
+	MetricUniqueID_Gpu_All_Util,
+	MetricUniqueID_Gpu_Avg_Temp,
+	MetricUniqueID_Disk_Util,
+	MetricUniqueID_Eth_Recv,
+	MetricUniqueID_Eth_Trans,
+	MetricUniqueID_IB_Recv,
+}
+
+func CheckMetricUniqueIDExist(uniqueID MetricUniqueID) bool {
+	list := golang_set.NewSet[MetricUniqueID](metricUniqueIDList...)
+
+	return list.Contains(uniqueID)
+}

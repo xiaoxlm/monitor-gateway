@@ -12,6 +12,7 @@ type ListMetricsRESP struct {
 type MetricsData struct {
 	MetricUniqueID   enum.MetricUniqueID      `json:"metricUniqueID"` // 指标唯一标识
 	HostIP           string                   `json:"hostIP"`
+	Label            map[string]string        `json:"label"`            // 暂存字段。将请求参数的label透传给 ibn 用
 	MultiMetricsData bool                     `json:"multiMetricsData"` // values 是否有多个值
 	Values           httputil.MetricsFromExpr `json:"values"`           // 时序数值
 }
