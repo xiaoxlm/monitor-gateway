@@ -173,7 +173,7 @@ const docTemplate = `{
                     }
                 },
                 "metricUniqueID": {
-                    "$ref": "#/definitions/github_com_xiaoxlm_monitor-gateway_internal_enum.MetricUniqueID"
+                    "type": "string"
                 }
             }
         },
@@ -193,6 +193,13 @@ const docTemplate = `{
             "properties": {
                 "hostIP": {
                     "type": "string"
+                },
+                "label": {
+                    "description": "暂存字段。将请求参数的label透传给 ibn 用",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 },
                 "metricUniqueID": {
                     "description": "指标唯一标识",
