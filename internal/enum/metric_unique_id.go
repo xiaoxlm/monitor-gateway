@@ -31,6 +31,7 @@ var metricUniqueIDList []MetricUniqueID = []MetricUniqueID{
 	MetricUniqueID_Eth_Recv,
 	MetricUniqueID_Eth_Trans,
 	MetricUniqueID_IB_Recv,
+	MetricUniqueID_IB_Trans,
 }
 
 func CheckMetricUniqueIDExist(uniqueID MetricUniqueID) bool {
